@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Archery Game</title>
+    <title>Archery Game - EXTREME Trajectory Effects</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <style>
       body{
-        background:#222;
+        background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
         margin:20px;
+        overflow: hidden;
       }
       svg{
         width:100%;
@@ -15,93 +16,174 @@
         position:fixed;
         top:0;
         left:0;
+        filter: drop-shadow(0 0 20px rgba(136, 206, 2, 0.1));
       }
       span{
         color:white;
-        font-family:sans-serif;
-        opacity:.3;
+        font-family:'Orbitron', sans-serif;
+        opacity:.8;
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        font-size: 16px;
+        text-shadow: 0 0 10px rgba(136, 206, 2, 0.5);
       }
       
-      /* Customization Panel Styles */
+      /* Multiple Canvas Layers for Complex Effects */
+      #particleCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 100;
+      }
+      
+      #lightingCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 90;
+        mix-blend-mode: screen;
+      }
+      
+      #atmosphereCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 80;
+        opacity: 0.6;
+      }
+      
+      /* Customization Panel */
       .customization-panel {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: rgba(51, 51, 51, 0.9);
-        border: 2px solid #88ce02;
-        border-radius: 10px;
-        padding: 15px;
-        font-family: sans-serif;
+        background: rgba(10, 15, 25, 0.95);
+        border: 3px solid;
+        border-image: linear-gradient(45deg, #88ce02, #00ff88, #88ce02) 1;
+        border-radius: 20px;
+        padding: 25px;
+        font-family: 'Orbitron', sans-serif;
         color: white;
-        min-width: 200px;
+        min-width: 250px;
         z-index: 1000;
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1);
       }
       
       .panel-title {
         text-align: center;
-        color: #88ce02;
+        background: linear-gradient(45deg, #88ce02, #00ff88);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         font-weight: bold;
-        margin-bottom: 15px;
-        font-size: 16px;
+        margin-bottom: 20px;
+        font-size: 20px;
+        text-shadow: 0 0 20px rgba(136, 206, 2, 0.8);
+        letter-spacing: 2px;
       }
       
       .option-group {
-        margin-bottom: 15px;
+        margin-bottom: 20px;
       }
       
       .option-label {
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: 12px;
         font-size: 14px;
         color: #ddd;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
       
       .option-buttons {
         display: flex;
-        gap: 5px;
+        gap: 8px;
         flex-wrap: wrap;
       }
       
       .option-btn {
-        padding: 5px 10px;
-        border: 1px solid #666;
-        background: #444;
+        padding: 10px 15px;
+        border: 2px solid transparent;
+        background: linear-gradient(145deg, #2a3550, #1a2540);
         color: white;
         cursor: pointer;
-        border-radius: 5px;
+        border-radius: 12px;
         font-size: 12px;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .option-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        transition: left 0.5s;
       }
       
       .option-btn:hover {
-        background: #555;
+        background: linear-gradient(145deg, #3a4560, #2a3550);
         border-color: #88ce02;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(136, 206, 2, 0.3);
+      }
+      
+      .option-btn:hover::before {
+        left: 100%;
       }
       
       .option-btn.active {
-        background: #88ce02;
+        background: linear-gradient(145deg, #88ce02, #00ff88);
         border-color: #88ce02;
         color: #222;
+        box-shadow: 0 0 30px rgba(136, 206, 2, 0.6);
+        animation: activeGlow 2s infinite alternate;
+      }
+      
+      @keyframes activeGlow {
+        from { box-shadow: 0 0 30px rgba(136, 206, 2, 0.6); }
+        to { box-shadow: 0 0 40px rgba(136, 206, 2, 0.8); }
       }
       
       .toggle-btn {
         position: absolute;
-        top: -5px;
-        right: -5px;
-        background: #88ce02;
+        top: -12px;
+        right: -12px;
+        background: linear-gradient(45deg, #88ce02, #00ff88);
         border: none;
         border-radius: 50%;
-        width: 25px;
-        height: 25px;
+        width: 40px;
+        height: 40px;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 18px;
         color: #222;
         font-weight: bold;
+        box-shadow: 0 8px 20px rgba(136, 206, 2, 0.4);
+        transition: all 0.3s ease;
+        animation: pulseGlow 3s infinite;
+      }
+      
+      @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 8px 20px rgba(136, 206, 2, 0.4); }
+        50% { box-shadow: 0 8px 30px rgba(136, 206, 2, 0.8); }
+      }
+      
+      .toggle-btn:hover {
+        transform: scale(1.1) rotate(90deg);
       }
       
       .panel-collapsed {
-        transform: translateX(calc(100% - 40px));
+        transform: translateX(calc(100% - 60px));
       }
       
       .panel-collapsed .panel-content {
@@ -109,143 +191,468 @@
         pointer-events: none;
       }
     </style>
-
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="https://i.ibb.co/M6KTWnf/pic.jpg">
-
   </head>
   <body>
-    <!-- Customization Panel -->
+    <!-- Multiple Canvas Layers for Complex Effects -->
+    <canvas id="atmosphereCanvas"></canvas>
+    <canvas id="lightingCanvas"></canvas>
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Enhanced Customization Panel -->
     <div class="customization-panel" id="customPanel">
-      <button class="toggle-btn" onclick="togglePanel()">⚙</button>
+      <button class="toggle-btn" onclick="togglePanel(event)">⚙</button>
       <div class="panel-content">
-        <div class="panel-title">Customize Game</div>
+        <div class="panel-title">🔥 EXTREME TRAJECTORY EFFECTS 🔥</div>
         
         <div class="option-group">
-          <span class="option-label">Arrow Style:</span>
+          <span class="option-label">🏹 Arrow Effects:</span>
           <div class="option-buttons">
-            <button class="option-btn active" onclick="changeArrowStyle('default')">Default</button>
-            <button class="option-btn" onclick="changeArrowStyle('fire')">Fire</button>
-            <button class="option-btn" onclick="changeArrowStyle('ice')">Ice</button>
-            <button class="option-btn" onclick="changeArrowStyle('gold')">Gold</button>
+            <button class="option-btn active" onclick="changeArrowStyle('default', event)">⚡ Default</button>
+            <button class="option-btn" onclick="changeArrowStyle('fire', event)">🔥 Inferno</button>
+            <button class="option-btn" onclick="changeArrowStyle('ice', event)">❄️ Blizzard</button>
+            <button class="option-btn" onclick="changeArrowStyle('gold', event)">✨ Divine</button>
           </div>
         </div>
         
         <div class="option-group">
-          <span class="option-label">Target Style:</span>
+          <span class="option-label">🎯 Target Effects:</span>
           <div class="option-buttons">
-            <button class="option-btn active" onclick="changeTargetStyle('classic')">Classic</button>
-            <button class="option-btn" onclick="changeTargetStyle('modern')">Modern</button>
-            <button class="option-btn" onclick="changeTargetStyle('neon')">Neon</button>
-            <button class="option-btn" onclick="changeTargetStyle('wooden')">Wooden</button>
+            <button class="option-btn active" onclick="changeTargetStyle('classic', event)">🎯 Classic+</button>
+            <button class="option-btn" onclick="changeTargetStyle('modern', event)">🔵 Hologram</button>
+            <button class="option-btn" onclick="changeTargetStyle('neon', event)">💫 Plasma</button>
+            <button class="option-btn" onclick="changeTargetStyle('wooden', event)">🪵 Ancient</button>
           </div>
         </div>
         
         <div class="option-group">
-          <span class="option-label">Bow Color:</span>
+          <span class="option-label">🏹 Bow Power:</span>
           <div class="option-buttons">
-            <button class="option-btn active" onclick="changeBowColor('#88ce02')">Green</button>
-            <button class="option-btn" onclick="changeBowColor('#ff6b35')">Orange</button>
-            <button class="option-btn" onclick="changeBowColor('#4ecdc4')">Cyan</button>
-            <button class="option-btn" onclick="changeBowColor('#ffe66d')">Yellow</button>
+            <button class="option-btn active" onclick="changeBowColor('#88ce02', event)">🟢 Nature</button>
+            <button class="option-btn" onclick="changeBowColor('#ff6b35', event)">🔥 Phoenix</button>
+            <button class="option-btn" onclick="changeBowColor('#4ecdc4', event)">❄️ Frost</button>
+            <button class="option-btn" onclick="changeBowColor('#ffe66d', event)">⚡ Thunder</button>
+            <button class="option-btn" onclick="changeBowColor('#ff0080', event)">🌙 Void</button>
           </div>
         </div>
       </div>
     </div>
 
     <svg id="game" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" overflow="visible">
-      <linearGradient id="ArcGradient" >
-          <stop offset="0"  stop-color="#fff" stop-opacity=".2"/>
-          <stop offset="50%" stop-color="#fff" stop-opacity="0"/>
-      </linearGradient>
-        <path id="arc" fill="none" stroke="url(#ArcGradient)" stroke-width="4" d="M100,250c250-400,550-400,800,0"  pointer-events="none"/>
+      <defs>
+        <!-- EXTREME Trajectory Gradients for Each Arrow Type -->
         
-        <!-- Arrow Definitions -->
-        <defs>
-            <!-- Default Arrow -->
-            <g id="arrow-default">
-                <line x2="60" fill="none" stroke="#888" stroke-width="2" />
-                <polygon fill="#888" points="64 0 58 2 56 0 58 -2" />
-                <polygon fill="#88ce02" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
-            </g>
-            
-            <!-- Fire Arrow -->
-            <g id="arrow-fire">
-                <line x2="60" fill="none" stroke="#d32f2f" stroke-width="2" />
-                <polygon fill="#d32f2f" points="64 0 58 2 56 0 58 -2" />
-                <polygon fill="#ff6b35" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
-                <circle cx="0" cy="0" r="2" fill="#ff9800" opacity="0.7">
-                  <animate attributeName="opacity" values="0.7;1;0.7" dur="0.5s" repeatCount="indefinite"/>
-                </circle>
-            </g>
-            
-            <!-- Ice Arrow -->
-            <g id="arrow-ice">
-                <line x2="60" fill="none" stroke="#1976d2" stroke-width="2" />
-                <polygon fill="#1976d2" points="64 0 58 2 56 0 58 -2" />
-                <polygon fill="#4ecdc4" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
-                <circle cx="5" cy="0" r="1.5" fill="#b3e5fc" opacity="0.8">
-                  <animate attributeName="r" values="1.5;2;1.5" dur="1s" repeatCount="indefinite"/>
-                </circle>
-            </g>
-            
-            <!-- Gold Arrow -->
-            <g id="arrow-gold">
-                <line x2="60" fill="none" stroke="#f57c00" stroke-width="2" />
-                <polygon fill="#f57c00" points="64 0 58 2 56 0 58 -2" />
-                <polygon fill="#ffd700" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
-                <polygon fill="#ffecb3" points="1 -2 -2 -2 -1 0 -2 2 1 2 3 0" opacity="0.8" />
-            </g>
-        </defs>
+        <!-- Fire Trajectory Effects -->
+        <linearGradient id="fireTrajectoryGradient">
+            <stop offset="0%" stop-color="#ff0000" stop-opacity="0.9"/>
+            <stop offset="25%" stop-color="#ff4500" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#ffaa00" stop-opacity="0.7"/>
+            <stop offset="75%" stop-color="#ff6600" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#cc3300" stop-opacity="0.6"/>
+        </linearGradient>
         
-        <!-- Target Groups with different styles -->
-        <g id="target-classic">
-            <path fill="#FFF" d="M924.2,274.2c-21.5,21.5-45.9,19.9-52,3.2c-4.4-12.1,2.4-29.2,14.2-41c11.8-11.8,29-18.6,41-14.2 C944.1,228.3,945.7,252.8,924.2,274.2z" />
-            <path fill="#F4531C" d="M915.8,265.8c-14.1,14.1-30.8,14.6-36,4.1c-4.1-8.3,0.5-21.3,9.7-30.5s22.2-13.8,30.5-9.7 C930.4,235,929.9,251.7,915.8,265.8z" />
-            <path fill="#FFF" d="M908.9,258.9c-8,8-17.9,9.2-21.6,3.5c-3.2-4.9-0.5-13.4,5.6-19.5c6.1-6.1,14.6-8.8,19.5-5.6 C918.1,241,916.9,250.9,908.9,258.9z" />
-            <path fill="#F4531C" d="M903.2,253.2c-2.9,2.9-6.7,3.6-8.3,1.7c-1.5-1.8-0.6-5.4,2-8c2.6-2.6,6.2-3.6,8-2 C906.8,246.5,906.1,250.2,903.2,253.2z" />
-        </g>
+        <radialGradient id="fireTrajectoryGlow" cx="0.5" cy="0.5" r="0.8">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
+          <stop offset="30%" stop-color="#ffaa00" stop-opacity="0.4"/>
+          <stop offset="70%" stop-color="#ff4500" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#660000" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Ice Trajectory Effects -->
+        <linearGradient id="iceTrajectoryGradient">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+            <stop offset="25%" stop-color="#b3e5fc" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#87ceeb" stop-opacity="0.7"/>
+            <stop offset="75%" stop-color="#4682b4" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#1976d2" stop-opacity="0.6"/>
+        </linearGradient>
         
-        <g id="target-modern" style="display:none">
-            <circle cx="900" cy="249.5" r="40" fill="#2196F3" />
-            <circle cx="900" cy="249.5" r="30" fill="#FFF" />
-            <circle cx="900" cy="249.5" r="20" fill="#2196F3" />
-            <circle cx="900" cy="249.5" r="10" fill="#FFF" />
-            <circle cx="900" cy="249.5" r="5" fill="#FF5722" />
-        </g>
+        <radialGradient id="iceTrajectoryGlow" cx="0.5" cy="0.5" r="0.8">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
+          <stop offset="30%" stop-color="#b3e5fc" stop-opacity="0.4"/>
+          <stop offset="70%" stop-color="#4682b4" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#003366" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Gold Trajectory Effects -->
+        <linearGradient id="goldTrajectoryGradient">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+            <stop offset="25%" stop-color="#ffff99" stop-opacity="0.8"/>
+            <stop offset="50%" stop-color="#ffd700" stop-opacity="0.8"/>
+            <stop offset="75%" stop-color="#ffaa00" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#ff8c00" stop-opacity="0.6"/>
+        </linearGradient>
         
-        <g id="target-neon" style="display:none">
-            <circle cx="900" cy="249.5" r="40" fill="none" stroke="#00ffff" stroke-width="3">
-              <animate attributeName="stroke-opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+        <radialGradient id="goldTrajectoryGlow" cx="0.5" cy="0.5" r="0.8">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7"/>
+          <stop offset="30%" stop-color="#ffd700" stop-opacity="0.5"/>
+          <stop offset="70%" stop-color="#ffaa00" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#cc6600" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Default Trajectory Effects -->
+        <linearGradient id="defaultTrajectoryGradient">
+            <stop offset="0%" stop-color="#fff" stop-opacity="0.6"/>
+            <stop offset="50%" stop-color="#88ce02" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#fff" stop-opacity="0.2"/>
+        </linearGradient>
+        
+        <radialGradient id="defaultTrajectoryGlow" cx="0.5" cy="0.5" r="0.8">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+          <stop offset="50%" stop-color="#88ce02" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#88ce02" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Advanced Gradients for Arrows -->
+        <radialGradient id="extremeFireCore" cx="0.5" cy="0.2" r="1.2">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+          <stop offset="10%" stop-color="#ffff99" stop-opacity="1"/>
+          <stop offset="25%" stop-color="#ffaa00" stop-opacity="0.95"/>
+          <stop offset="45%" stop-color="#ff6600" stop-opacity="0.9"/>
+          <stop offset="65%" stop-color="#cc3300" stop-opacity="0.7"/>
+          <stop offset="85%" stop-color="#660000" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+        </radialGradient>
+        
+        <radialGradient id="extremeIceCore" cx="0.5" cy="0.2" r="1.3">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+          <stop offset="15%" stop-color="#e6f3ff" stop-opacity="1"/>
+          <stop offset="35%" stop-color="#b3e0ff" stop-opacity="0.9"/>
+          <stop offset="55%" stop-color="#66ccff" stop-opacity="0.8"/>
+          <stop offset="75%" stop-color="#0099cc" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#003366" stop-opacity="0"/>
+        </radialGradient>
+        
+        <radialGradient id="extremeGoldCore" cx="0.5" cy="0.2" r="1.1">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+          <stop offset="12%" stop-color="#ffff99" stop-opacity="1"/>
+          <stop offset="30%" stop-color="#ffdd00" stop-opacity="0.95"/>
+          <stop offset="50%" stop-color="#ffaa00" stop-opacity="0.9"/>
+          <stop offset="70%" stop-color="#ff8800" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#cc4400" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Extreme Bow Effects -->
+        <radialGradient id="extremeBowEnergy" cx="0.5" cy="0.5" r="0.8">
+          <stop offset="0%" stop-color="#88ce02" stop-opacity="0.9"/>
+          <stop offset="30%" stop-color="#88ce02" stop-opacity="0.7"/>
+          <stop offset="60%" stop-color="#88ce02" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="#88ce02" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Ultra Target Effects -->
+        <radialGradient id="extremeTargetGlow" cx="0.5" cy="0.5" r="1.2">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+          <stop offset="40%" stop-color="#ffff99" stop-opacity="0.2"/>
+          <stop offset="70%" stop-color="#ff9900" stop-opacity="0.1"/>
+          <stop offset="100%" stop-color="#ff3300" stop-opacity="0"/>
+        </radialGradient>
+        
+        <!-- EXTREME Arrow Definitions -->
+        <g id="arrow-default">
+            <line x2="60" fill="none" stroke="#888" stroke-width="2.5" />
+            <polygon fill="#888" points="64 0 58 2 56 0 58 -2" />
+            <polygon fill="#88ce02" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
+            <circle cx="0" cy="0" r="3" fill="#88ce02" opacity="0.3">
+              <animate attributeName="r" values="3;5;3" dur="1s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.3;0.1;0.3" dur="1s" repeatCount="indefinite"/>
             </circle>
-            <circle cx="900" cy="249.5" r="30" fill="none" stroke="#ff00ff" stroke-width="2">
-              <animate attributeName="stroke-opacity" values="0.8;0.3;0.8" dur="1.5s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="900" cy="249.5" r="20" fill="none" stroke="#ffff00" stroke-width="2">
-              <animate attributeName="stroke-opacity" values="0.6;1;0.6" dur="1s" repeatCount="indefinite"/>
-            </circle>
-            <circle cx="900" cy="249.5" r="10" fill="#ff0080" opacity="0.8">
-              <animate attributeName="opacity" values="0.8;0.4;0.8" dur="0.8s" repeatCount="indefinite"/>
-            </circle>
         </g>
         
-        <g id="target-wooden" style="display:none">
-            <circle cx="900" cy="249.5" r="40" fill="#8D6E63" stroke="#5D4037" stroke-width="2" />
-            <circle cx="900" cy="249.5" r="30" fill="#FFF8E1" />
-            <circle cx="900" cy="249.5" r="20" fill="#8D6E63" />
-            <circle cx="900" cy="249.5" r="10" fill="#FFF8E1" />
-            <circle cx="900" cy="249.5" r="5" fill="#D32F2F" />
+        <!-- EXTREME Fire Arrow -->
+        <g id="arrow-fire">
+            <line x2="60" fill="none" stroke="#d32f2f" stroke-width="3" />
+            <polygon fill="#d32f2f" points="64 0 58 2 56 0 58 -2" />
+            <polygon fill="#ff4500" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
+            <line x2="58" fill="none" stroke="#ff9900" stroke-width="1.5" opacity="0.8" />
+            <g class="extreme-fire-trail">
+              <circle cx="-8" cy="0" r="3" fill="#ff4500" opacity="0.9">
+                <animate attributeName="opacity" values="0.9;0.3;0;0.9" dur="0.15s" repeatCount="indefinite"/>
+                <animate attributeName="r" values="3;5;1;3" dur="0.15s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="-12" cy="1" r="2.5" fill="#ffaa00" opacity="0.8">
+                <animate attributeName="opacity" values="0.8;0.2;0;0.8" dur="0.2s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="1;3;-2;1" dur="0.2s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="-16" cy="-1" r="2" fill="#ff6500" opacity="0.7">
+                <animate attributeName="opacity" values="0.7;0.1;0;0.7" dur="0.12s" repeatCount="indefinite"/>
+                <animate attributeName="cy" values="-1;-3;2;-1" dur="0.12s" repeatCount="indefinite"/>
+              </circle>
+            </g>
         </g>
         
-        <g id="bow" fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke" pointer-events="none">
-          <polyline fill="none" stroke="#ddd" stroke-linecap="round" points="88,200 88,250 88,300"/>
-          <path fill="none" stroke="#88ce02" stroke-width="3" stroke-linecap="round" d="M88,300 c0-10.1,12-25.1,12-50s-12-39.9-12-50" id="bowString"/>
+        <!-- EXTREME Ice Arrow -->
+        <g id="arrow-ice">
+            <line x2="60" fill="none" stroke="#1976d2" stroke-width="3" />
+            <polygon fill="#1976d2" points="64 0 58 2 56 0 58 -2" />
+            <polygon fill="#4ecdc4" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
+            <line x2="58" fill="none" stroke="#87ceeb" stroke-width="1.5" opacity="0.9" />
+            <g class="extreme-ice-trail">
+              <polygon points="-10,0 -8,-3 -6,0 -8,3" fill="#87ceeb" opacity="0.9">
+                <animate attributeName="opacity" values="0.9;0.3;0;0.9" dur="0.6s" repeatCount="indefinite"/>
+                <animateTransform attributeName="transform" type="rotate" values="0;360" dur="1.5s" repeatCount="indefinite"/>
+              </polygon>
+              <circle cx="-6" cy="0" r="2.5" fill="#b3e5fc" opacity="0.8">
+                <animate attributeName="opacity" values="0.8;0.2;0;0.8" dur="0.4s" repeatCount="indefinite"/>
+                <animate attributeName="r" values="2.5;4;0.5;2.5" dur="0.4s" repeatCount="indefinite"/>
+              </circle>
+            </g>
         </g>
+        
+        <!-- EXTREME Gold Arrow -->
+        <g id="arrow-gold">
+            <line x2="60" fill="none" stroke="#f57c00" stroke-width="3" />
+            <polygon fill="#f57c00" points="64 0 58 2 56 0 58 -2" />
+            <polygon fill="#ffd700" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
+            <polygon fill="#ffecb3" points="1 -2 -2 -2 -1 0 -2 2 1 2 3 0" opacity="1" />
+            <line x2="58" fill="none" stroke="#ffff99" stroke-width="1.5" opacity="0.8" />
+            <g class="extreme-gold-trail">
+              <circle cx="-8" cy="0" r="2" fill="#ffd700" opacity="1">
+                <animate attributeName="opacity" values="1;0;1" dur="0.3s" repeatCount="indefinite"/>
+                <animate attributeName="r" values="2;3;2" dur="0.3s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="-6" cy="2" r="1.5" fill="#ffaa00" opacity="0.9">
+                <animate attributeName="opacity" values="0.9;0;0.9" dur="0.25s" repeatCount="indefinite"/>
+              </circle>
+            </g>
+        </g>
+      </defs>
+      
+      <!-- EXTREME Enhanced trajectory arcs with theme-based effects -->
+      
+      <!-- Default Arc -->
+      <g id="trajectory-default">
+        <path id="arc" fill="none" stroke="url(#defaultTrajectoryGradient)" stroke-width="6" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
+        <path id="arcGlow" fill="none" stroke="url(#defaultTrajectoryGlow)" stroke-width="12" opacity="0.3" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
+        <!-- Particle trail dots -->
+        <g class="trajectory-particles" opacity="0.6">
+          <circle cx="200" cy="150" r="2" fill="#88ce02" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="350" cy="100" r="2" fill="#88ce02" opacity="0.6">
+            <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="500" cy="75" r="2" fill="#88ce02" opacity="0.7">
+            <animate attributeName="opacity" values="0.7;0.3;0.7" dur="1.8s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="650" cy="100" r="2" fill="#88ce02" opacity="0.5">
+            <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="800" cy="200" r="2" fill="#88ce02" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </g>
+
+      <!-- Fire Arc -->
+      <g id="trajectory-fire" style="display:none">
+        <path id="arc-fire" fill="none" stroke="url(#fireTrajectoryGradient)" stroke-width="8" d="M100,250c250-400,550-400,800,0" pointer-events="none">
+          <animate attributeName="stroke-opacity" values="0.6;1;0.6" dur="0.5s" repeatCount="indefinite"/>
+        </path>
+        <path id="arcGlow-fire" fill="none" stroke="url(#fireTrajectoryGlow)" stroke-width="20" opacity="0.4" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
+        <!-- Fire particles along trajectory -->
+        <g class="fire-trajectory-particles">
+          <circle cx="200" cy="150" r="3" fill="#ff4500" opacity="0.9">
+            <animate attributeName="opacity" values="0.9;0.3;0;0.9" dur="0.3s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="3;6;1;3" dur="0.3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="350" cy="100" r="2.5" fill="#ffaa00" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;0.2;0;0.8" dur="0.4s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="100;95;105;100" dur="0.4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="500" cy="75" r="2" fill="#ff6500" opacity="0.7">
+            <animate attributeName="opacity" values="0.7;0.1;0;0.7" dur="0.25s" repeatCount="indefinite"/>
+            <animate attributeName="cy" values="75;70;80;75" dur="0.25s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="650" cy="100" r="3" fill="#cc3300" opacity="0.6">
+            <animate attributeName="opacity" values="0.6;0.2;0;0.6" dur="0.35s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="800" cy="200" r="4" fill="#ffffff" opacity="1">
+            <animate attributeName="opacity" values="1;0.5;0;1" dur="0.2s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="4;7;2;4" dur="0.2s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </g>
+
+      <!-- Ice Arc -->
+      <g id="trajectory-ice" style="display:none">
+        <path id="arc-ice" fill="none" stroke="url(#iceTrajectoryGradient)" stroke-width="8" d="M100,250c250-400,550-400,800,0" pointer-events="none">
+          <animate attributeName="stroke-dasharray" values="0,1000;20,980;0,1000" dur="2s" repeatCount="indefinite"/>
+        </path>
+        <path id="arcGlow-ice" fill="none" stroke="url(#iceTrajectoryGlow)" stroke-width="18" opacity="0.5" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
+        <!-- Ice crystals along trajectory -->
+        <g class="ice-trajectory-particles">
+          <polygon points="200,150 198,147 200,144 202,147" fill="#87ceeb" opacity="0.9">
+            <animate attributeName="opacity" values="0.9;0.4;0;0.9" dur="0.8s" repeatCount="indefinite"/>
+            <animateTransform attributeName="transform" type="rotate" values="0 200 150;360 200 150" dur="2s" repeatCount="indefinite"/>
+          </polygon>
+          <circle cx="350" cy="100" r="3" fill="#b3e5fc" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;0.3;0;0.8" dur="0.6s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="3;5;1;3" dur="0.6s" repeatCount="indefinite"/>
+          </circle>
+          <polygon points="500,75 497,72 500,69 503,72" fill="#4682b4" opacity="0.7">
+            <animate attributeName="opacity" values="0.7;0.2;0;0.7" dur="0.7s" repeatCount="indefinite"/>
+            <animateTransform attributeName="transform" type="rotate" values="0 500 75;-360 500 75" dur="1.5s" repeatCount="indefinite"/>
+          </polygon>
+          <circle cx="650" cy="100" r="2.5" fill="#ffffff" opacity="1">
+            <animate attributeName="opacity" values="1;0.5;0;1" dur="0.5s" repeatCount="indefinite"/>
+          </circle>
+          <polygon points="800,200 796,196 800,192 804,196" fill="#1976d2" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;0.3;0;0.8" dur="0.9s" repeatCount="indefinite"/>
+            <animateTransform attributeName="transform" type="rotate" values="0 800 200;360 800 200" dur="3s" repeatCount="indefinite"/>
+          </polygon>
+        </g>
+      </g>
+
+      <!-- Gold Arc -->
+      <g id="trajectory-gold" style="display:none">
+        <path id="arc-gold" fill="none" stroke="url(#goldTrajectoryGradient)" stroke-width="8" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
+        <path id="arcGlow-gold" fill="none" stroke="url(#goldTrajectoryGlow)" stroke-width="22" opacity="0.6" d="M100,250c250-400,550-400,800,0" pointer-events="none">
+          <animate attributeName="opacity" values="0.6;0.9;0.6" dur="1s" repeatCount="indefinite"/>
+        </path>
+        <!-- Gold sparkles along trajectory -->
+        <g class="gold-trajectory-particles">
+          <circle cx="200" cy="150" r="2" fill="#ffd700" opacity="1">
+            <animate attributeName="opacity" values="1;0;1" dur="0.5s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="2;4;2" dur="0.5s" repeatCount="indefinite"/>
+          </circle>
+          <g transform="translate(350,100)">
+            <circle cx="0" cy="0" r="2" fill="#ffaa00" opacity="0.9">
+              <animate attributeName="opacity" values="0.9;0;0.9" dur="0.4s" repeatCount="indefinite"/>
+            </circle>
+            <line x1="-4" y1="0" x2="4" y2="0" stroke="#ffffff" stroke-width="1" opacity="0.8">
+              <animate attributeName="opacity" values="0.8;0.3;0.8" dur="0.4s" repeatCount="indefinite"/>
+            </line>
+            <line x1="0" y1="-4" x2="0" y2="4" stroke="#ffffff" stroke-width="1" opacity="0.8">
+              <animate attributeName="opacity" values="0.8;0.3;0.8" dur="0.4s" repeatCount="indefinite"/>
+            </line>
+          </g>
+          <circle cx="500" cy="75" r="1.5" fill="#ffa500" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;0;0.8" dur="0.6s" repeatCount="indefinite"/>
+          </circle>
+          <g transform="translate(650,100)">
+            <circle cx="0" cy="0" r="3" fill="#ffd700" opacity="1">
+              <animate attributeName="opacity" values="1;0.4;1" dur="0.3s" repeatCount="indefinite"/>
+            </circle>
+            <line x1="-6" y1="0" x2="6" y2="0" stroke="#ffffff" stroke-width="1.5" opacity="0.9">
+              <animate attributeName="opacity" values="0.9;0.4;0.9" dur="0.3s" repeatCount="indefinite"/>
+            </line>
+            <line x1="0" y1="-6" x2="0" y2="6" stroke="#ffffff" stroke-width="1.5" opacity="0.9">
+              <animate attributeName="opacity" values="0.9;0.4;0.9" dur="0.3s" repeatCount="indefinite"/>
+            </line>
+            <line x1="-4" y1="-4" x2="4" y2="4" stroke="#ffffff" stroke-width="1" opacity="0.7">
+              <animate attributeName="opacity" values="0.7;0.2;0.7" dur="0.3s" repeatCount="indefinite"/>
+            </line>
+            <line x1="4" y1="-4" x2="-4" y2="4" stroke="#ffffff" stroke-width="1" opacity="0.7">
+              <animate attributeName="opacity" values="0.7;0.2;0.7" dur="0.3s" repeatCount="indefinite"/>
+            </line>
+          </g>
+          <circle cx="800" cy="200" r="3" fill="#ffffff" opacity="1">
+            <animate attributeName="opacity" values="1;0.5;1" dur="0.2s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="3;5;3" dur="0.2s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+      </g>
+        
+      <!-- EXTREME Target Groups -->
+      <g id="target-classic">
+          <circle cx="900" cy="249.5" r="80" fill="url(#extremeTargetGlow)" opacity="0">
+            <animate attributeName="opacity" values="0;0.6;0" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="905" cy="254.5" r="45" fill="#000" opacity="0.4"/>
+          <path fill="#FFF" d="M924.2,274.2c-21.5,21.5-45.9,19.9-52,3.2c-4.4-12.1,2.4-29.2,14.2-41c11.8-11.8,29-18.6,41-14.2 C944.1,228.3,945.7,252.8,924.2,274.2z" />
+          <path fill="#F4531C" d="M915.8,265.8c-14.1,14.1-30.8,14.6-36,4.1c-4.1-8.3,0.5-21.3,9.7-30.5s22.2-13.8,30.5-9.7 C930.4,235,929.9,251.7,915.8,265.8z" />
+          <path fill="#FFF" d="M908.9,258.9c-8,8-17.9,9.2-21.6,3.5c-3.2-4.9-0.5-13.4,5.6-19.5c6.1-6.1,14.6-8.8,19.5-5.6 C918.1,241,916.9,250.9,908.9,258.9z" />
+          <path fill="#F4531C" d="M903.2,253.2c-2.9,2.9-6.7,3.6-8.3,1.7c-1.5-1.8-0.6-5.4,2-8c2.6-2.6,6.2-3.6,8-2 C906.8,246.5,906.1,250.2,903.2,253.2z" />
+          <circle cx="900" cy="249.5" r="4" fill="#fff" opacity="1">
+            <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+            <animate attributeName="r" values="4;6;4" dur="1s" repeatCount="indefinite"/>
+          </circle>
+      </g>
+      
+      <g id="target-modern" style="display:none">
+          <circle cx="900" cy="249.5" r="80" fill="url(#extremeTargetGlow)" opacity="0">
+            <animate attributeName="opacity" values="0;0.8;0" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="905" cy="254.5" r="45" fill="#000066" opacity="0.3"/>
+          <circle cx="900" cy="249.5" r="40" fill="#2196F3" />
+          <circle cx="900" cy="249.5" r="30" fill="#FFF" />
+          <circle cx="900" cy="249.5" r="20" fill="#2196F3" />
+          <circle cx="900" cy="249.5" r="10" fill="#FFF" />
+          <circle cx="900" cy="249.5" r="5" fill="#FF5722" />
+      </g>
+      
+      <g id="target-neon" style="display:none">
+          <circle cx="900" cy="249.5" r="100" fill="#00ffff" opacity="0">
+            <animate attributeName="opacity" values="0;0.2;0" dur="0.8s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="905" cy="254.5" r="45" fill="#000033" opacity="0.8"/>
+          <circle cx="900" cy="249.5" r="40" fill="none" stroke="#00ffff" stroke-width="4">
+            <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="1s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="900" cy="249.5" r="30" fill="none" stroke="#ff00ff" stroke-width="3">
+            <animate attributeName="stroke-opacity" values="0.5;1;0.5" dur="0.7s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="900" cy="249.5" r="20" fill="none" stroke="#ffff00" stroke-width="3">
+            <animate attributeName="stroke-opacity" values="0.4;1;0.4" dur="0.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="900" cy="249.5" r="10" fill="#ff0080" opacity="1">
+            <animate attributeName="opacity" values="1;0.2;1" dur="0.3s" repeatCount="indefinite"/>
+          </circle>
+      </g>
+      
+      <g id="target-wooden" style="display:none">
+          <circle cx="900" cy="249.5" r="70" fill="#8D6E63" opacity="0">
+            <animate attributeName="opacity" values="0;0.3;0" dur="5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="905" cy="254.5" r="45" fill="#2E1B12" opacity="0.5"/>
+          <circle cx="900" cy="249.5" r="40" fill="#8D6E63" stroke="#5D4037" stroke-width="3" />
+          <circle cx="900" cy="249.5" r="30" fill="#FFF8E1" />
+          <circle cx="900" cy="249.5" r="20" fill="#8D6E63" />
+          <circle cx="900" cy="249.5" r="10" fill="#FFF8E1" />
+          <circle cx="900" cy="249.5" r="5" fill="#D32F2F" />
+      </g>
+      
+      <!-- EXTREME Enhanced Bow -->
+      <g id="bow" fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke" pointer-events="none">
+        <polyline fill="none" stroke="#666" stroke-linecap="round" points="90,202 90,252 90,302" stroke-width="1" opacity="0.4"/>
+        <polyline fill="none" stroke="#aaa" stroke-linecap="round" points="89,201 89,251 89,301" stroke-width="2" opacity="0.7"/>
+        <polyline fill="none" stroke="#ddd" stroke-linecap="round" points="88,200 88,250 88,300" stroke-width="3"/>
+        
+        <path fill="none" stroke="#88ce02" stroke-width="4" stroke-linecap="round" d="M88,300 c0-10.1,12-25.1,12-50s-12-39.9-12-50" id="bowString" opacity="0.9"/>
+        <path fill="none" stroke="#88ce02" stroke-width="2" stroke-linecap="round" d="M88,300 c0-10.1,12-25.1,12-50s-12-39.9-12-50" opacity="0.6"/>
+        
+        <circle cx="100" cy="250" r="0" fill="url(#extremeBowEnergy)" opacity="0" id="bowEnergyField">
+          <animate attributeName="r" values="0;30;0" dur="0.4s" begin="indefinite"/>
+          <animate attributeName="opacity" values="0;0.8;0" dur="0.4s" begin="indefinite"/>
+        </circle>
+        
+        <g id="stringVibration" opacity="0">
+          <circle cx="95" cy="225" r="1.5" fill="#88ce02" opacity="1">
+            <animate attributeName="cy" values="225;223;225" dur="0.05s" repeatCount="20"/>
+            <animate attributeName="opacity" values="1;0.3;0" dur="1s"/>
+          </circle>
+          <circle cx="98" cy="245" r="1.2" fill="#88ce02" opacity="0.9">
+            <animate attributeName="cx" values="98;101;98" dur="0.05s" repeatCount="20"/>
+            <animate attributeName="opacity" values="0.9;0.2;0" dur="1s"/>
+          </circle>
+          <circle cx="95" cy="265" r="1.5" fill="#88ce02" opacity="1">
+            <animate attributeName="cy" values="265;267;265" dur="0.05s" repeatCount="20"/>
+            <animate attributeName="opacity" values="1;0.3;0" dur="1s"/>
+          </circle>
+        </g>
+      </g>
+      
       <g class="arrow-angle"><use x="100" y="250" xlink:href="#arrow-default" id="currentArrow"/></g>
+      
       <clipPath id="mask">
         <polygon opacity=".5" points="0,0 1500,0 1500,200 970,290 950,240 925,220 875,280 890,295 920,310 0,350" pointer-events="none"/>
       </clipPath>
-      <g class="arrows" clip-path="url(#mask)"  pointer-events="none">
-      </g>
+      
+      <g class="arrows" clip-path="url(#mask)" pointer-events="none"></g>
+      
       <g class="miss" fill="#aaa" opacity="0" transform="translate(0, 100)">
         <path d="M358 194L363 118 386 120 400 153 416 121 440 119 446 203 419 212 416 163 401 180 380 160 381 204"/>
         <path d="M450 120L458 200 475 192 474 121"/>
@@ -253,6 +660,7 @@
         <path d="M540 202L543 178 570 186 569 168 544 167 546 122 590 116 586 142 561 140 560 152 586 153 586 205"/>
         <path d="M595,215l5-23l31,0l-5,29L595,215z M627,176l13-70l-41-0l-0,70L627,176z"/>
       </g>
+      
       <g class="bullseye" fill="#F4531C" opacity="0">
         <path d="M322,159l15-21l-27-13l-32,13l15,71l41-14l7-32L322,159z M292,142h20l3,8l-16,8 L292,142z M321,182l-18,9l-4-18l23-2V182z"/>
         <path d="M340 131L359 125 362 169 381 167 386 123 405 129 392 183 351 186z"/>
@@ -264,7 +672,8 @@
         <path d="M635 122L599 198 643 207 649 188 624 188 630 170 639 178 645 162 637 158 649 143 662 151 670 134z"/>
         <path d="M649,220l4-21l28,4l-6,25L649,220z M681,191l40-79l-35-8L659,184L681,191z"/>
       </g>
-      <g class="hit" fill="#ffcc00" opacity="0" transform="translate(180, -80) rotate(12) ">
+      
+      <g class="hit" fill="#ffcc00" opacity="0" transform="translate(180, -80) rotate(12)">
         <path d="M383 114L385 195 407 191 406 160 422 155 418 191 436 189 444 112 423 119 422 141 407 146 400 113"/>
         <path d="M449 185L453 113 477 112 464 186"/>
         <path d="M486 113L484 130 506 130 481 188 506 187 520 131 540 135 545 119"/>
@@ -272,10 +681,307 @@
       </g>
     </svg>
 
-    <span>Draw back an arrow and launch it!</span>
+    <span>🔥 ULTIMATE: Dynamic trajectory effects that change per arrow type! Hyper-realistic graphics! ⚡❄️✨</span>
+    
     <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js'></script>
     <script src='//s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MorphSVGPlugin.min.js'></script>
     <script>
+      // Particle system (same as before but optimized)
+      class AAA_ParticleSystem {
+        constructor() {
+          this.particleCanvas = document.getElementById('particleCanvas');
+          this.lightingCanvas = document.getElementById('lightingCanvas');
+          this.atmosphereCanvas = document.getElementById('atmosphereCanvas');
+          
+          this.particleCtx = this.particleCanvas.getContext('2d');
+          this.lightingCtx = this.lightingCanvas.getContext('2d');
+          this.atmosphereCtx = this.atmosphereCanvas.getContext('2d');
+          
+          this.particles = [];
+          this.resize();
+          window.addEventListener('resize', () => this.resize());
+          this.animate();
+        }
+
+        resize() {
+          const width = window.innerWidth;
+          const height = window.innerHeight;
+          
+          this.particleCanvas.width = width;
+          this.particleCanvas.height = height;
+          this.lightingCanvas.width = width;
+          this.lightingCanvas.height = height;
+          this.atmosphereCanvas.width = width;
+          this.atmosphereCanvas.height = height;
+        }
+
+        createFireExplosion(x, y) {
+          for (let i = 0; i < 60; i++) {
+            this.particles.push(new FireParticle(x, y));
+          }
+        }
+
+        createIceExplosion(x, y) {
+          for (let i = 0; i < 45; i++) {
+            this.particles.push(new IceParticle(x, y));
+          }
+        }
+
+        createGoldExplosion(x, y) {
+          for (let i = 0; i < 70; i++) {
+            this.particles.push(new GoldParticle(x, y));
+          }
+        }
+
+        createBowBurst(x, y) {
+          for (let i = 0; i < 25; i++) {
+            this.particles.push(new EnergyParticle(x, y));
+          }
+        }
+
+        createShockwave(x, y) {
+          this.particles.push(new ShockwaveParticle(x, y));
+        }
+
+        update() {
+          this.particles = this.particles.filter(particle => {
+            particle.update();
+            return particle.life > 0;
+          });
+        }
+
+        render() {
+          this.particleCtx.clearRect(0, 0, this.particleCanvas.width, this.particleCanvas.height);
+          this.lightingCtx.clearRect(0, 0, this.lightingCanvas.width, this.lightingCanvas.height);
+          this.atmosphereCtx.clearRect(0, 0, this.atmosphereCanvas.width, this.atmosphereCanvas.height);
+
+          this.particles.forEach(particle => particle.render(this.particleCtx));
+        }
+
+        animate() {
+          this.update();
+          this.render();
+          requestAnimationFrame(() => this.animate());
+        }
+      }
+
+      // Particle classes (same as before)
+      class FireParticle {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 8 + 2;
+          this.vx = Math.cos(angle) * speed;
+          this.vy = Math.sin(angle) * speed - Math.random() * 3;
+          this.life = 1;
+          this.decay = Math.random() * 0.02 + 0.01;
+          this.size = Math.random() * 6 + 2;
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vy -= 0.1;
+          this.vx *= 0.98;
+          this.vy *= 0.98;
+          this.life -= this.decay;
+          this.size *= 0.98;
+        }
+
+        render(ctx) {
+          if (this.life <= 0) return;
+          
+          const alpha = this.life;
+          const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+          gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+          gradient.addColorStop(0.3, `rgba(255, 200, 0, ${alpha * 0.8})`);
+          gradient.addColorStop(0.7, `rgba(255, 100, 0, ${alpha * 0.6})`);
+          gradient.addColorStop(1, `rgba(200, 0, 0, 0)`);
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      class IceParticle {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 6 + 2;
+          this.vx = Math.cos(angle) * speed;
+          this.vy = Math.sin(angle) * speed;
+          this.life = 1;
+          this.decay = Math.random() * 0.015 + 0.005;
+          this.size = Math.random() * 4 + 1;
+          this.rotation = Math.random() * Math.PI * 2;
+          this.rotationSpeed = (Math.random() - 0.5) * 0.2;
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vx *= 0.96;
+          this.vy *= 0.96;
+          this.rotation += this.rotationSpeed;
+          this.life -= this.decay;
+        }
+
+        render(ctx) {
+          if (this.life <= 0) return;
+
+          ctx.save();
+          ctx.translate(this.x, this.y);
+          ctx.rotate(this.rotation);
+          
+          const alpha = this.life;
+          const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.size * 2);
+          gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+          gradient.addColorStop(0.4, `rgba(200, 230, 255, ${alpha * 0.8})`);
+          gradient.addColorStop(1, `rgba(100, 150, 255, 0)`);
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          for (let i = 0; i < 6; i++) {
+            const angle = (i * Math.PI) / 3;
+            const x = Math.cos(angle) * this.size;
+            const y = Math.sin(angle) * this.size;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.fill();
+          
+          ctx.restore();
+        }
+      }
+
+      class GoldParticle {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 10 + 3;
+          this.vx = Math.cos(angle) * speed;
+          this.vy = Math.sin(angle) * speed - Math.random() * 2;
+          this.life = 1;
+          this.decay = Math.random() * 0.02 + 0.01;
+          this.size = Math.random() * 3 + 1;
+          this.sparkle = Math.random() > 0.7;
+          this.twinkle = 0;
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vy += 0.1;
+          this.vx *= 0.97;
+          this.vy *= 0.97;
+          this.life -= this.decay;
+          this.twinkle += 0.3;
+        }
+
+        render(ctx) {
+          if (this.life <= 0) return;
+
+          const alpha = this.life;
+          const sparkleAlpha = this.sparkle ? Math.sin(this.twinkle) * 0.5 + 0.5 : 1;
+          
+          const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 2);
+          gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * sparkleAlpha})`);
+          gradient.addColorStop(0.3, `rgba(255, 220, 0, ${alpha * 0.9})`);
+          gradient.addColorStop(1, `rgba(255, 150, 0, 0)`);
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (this.sparkle && sparkleAlpha > 0.8) {
+            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(this.x - this.size * 2, this.y);
+            ctx.lineTo(this.x + this.size * 2, this.y);
+            ctx.moveTo(this.x, this.y - this.size * 2);
+            ctx.lineTo(this.x, this.y + this.size * 2);
+            ctx.stroke();
+          }
+        }
+      }
+
+      class EnergyParticle {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          const angle = Math.random() * Math.PI * 2;
+          const speed = Math.random() * 6 + 2;
+          this.vx = Math.cos(angle) * speed;
+          this.vy = Math.sin(angle) * speed;
+          this.life = 1;
+          this.decay = Math.random() * 0.03 + 0.02;
+          this.size = Math.random() * 3 + 1;
+        }
+
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vx *= 0.95;
+          this.vy *= 0.95;
+          this.life -= this.decay;
+        }
+
+        render(ctx) {
+          if (this.life <= 0) return;
+
+          const alpha = this.life;
+          const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 3);
+          gradient.addColorStop(0, `rgba(136, 206, 2, ${alpha})`);
+          gradient.addColorStop(1, `rgba(136, 206, 2, 0)`);
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      class ShockwaveParticle {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          this.radius = 0;
+          this.maxRadius = 100;
+          this.life = 1;
+          this.decay = 0.02;
+          this.expandSpeed = 4;
+        }
+
+        update() {
+          this.radius += this.expandSpeed;
+          this.life -= this.decay;
+          if (this.radius > this.maxRadius) this.life = 0;
+        }
+
+        render(ctx) {
+          if (this.life <= 0) return;
+
+          const alpha = this.life * 0.7;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+
+      // Initialize Particle System
+      const aaaParticleSystem = new AAA_ParticleSystem();
+
+      // Game Variables
       var svg = document.querySelector("svg");
       var cursor = svg.createSVGPoint();
       var arrows = document.querySelector(".arrows");
@@ -284,13 +990,11 @@
       var currentTargetStyle = 'classic';
       var currentBowColor = '#88ce02';
 
-      // center of target
       var target = {
         x: 900,
         y: 249.5
       };
 
-      // target intersection line segment
       var lineSegment = {
         x1: 875,
         y1: 280,
@@ -298,7 +1002,6 @@
         y2: 220
       };
 
-      // bow rotation point
       var pivot = {
         x: 100,
         y: 250
@@ -309,40 +1012,54 @@
         clientY: 300
       });
 
-      // Customization functions
-      function togglePanel() {
+      // ENHANCED: UI Functions with trajectory switching
+      function togglePanel(event) {
+        event.stopPropagation();
         const panel = document.getElementById('customPanel');
         panel.classList.toggle('panel-collapsed');
       }
 
-      function changeArrowStyle(style) {
+      function changeArrowStyle(style, event) {
+        event.stopPropagation();
         currentArrowStyle = style;
         document.getElementById('currentArrow').setAttribute('href', '#arrow-' + style);
         setActiveButton('.option-group:nth-child(2)', style);
+        
+        // EXTREME: Switch trajectory effects based on arrow style
+        switchTrajectoryEffects(style);
       }
 
-      function changeTargetStyle(style) {
-        // Hide all targets
+      function switchTrajectoryEffects(arrowStyle) {
+        // Hide all trajectory groups
+        document.getElementById('trajectory-default').style.display = 'none';
+        document.getElementById('trajectory-fire').style.display = 'none';
+        document.getElementById('trajectory-ice').style.display = 'none';
+        document.getElementById('trajectory-gold').style.display = 'none';
+        
+        // Show the matching trajectory
+        document.getElementById('trajectory-' + arrowStyle).style.display = 'block';
+      }
+
+      function changeTargetStyle(style, event) {
+        event.stopPropagation();
         document.getElementById('target-classic').style.display = 'none';
         document.getElementById('target-modern').style.display = 'none';
         document.getElementById('target-neon').style.display = 'none';
         document.getElementById('target-wooden').style.display = 'none';
         
-        // Show selected target
         document.getElementById('target-' + style).style.display = 'block';
         currentTargetStyle = style;
         setActiveButton('.option-group:nth-child(3)', style);
       }
 
-      function changeBowColor(color) {
+      function changeBowColor(color, event) {
+        event.stopPropagation();
         currentBowColor = color;
         document.getElementById('bowString').setAttribute('stroke', color);
-        // Update arrow feather color for default arrows
-        const feathers = document.querySelectorAll('#arrow-default polygon:last-child, #currentArrow polygon:last-child');
-        feathers.forEach(feather => {
-          if (currentArrowStyle === 'default') {
-            feather.setAttribute('fill', color);
-          }
+        const bowGradient = document.getElementById('extremeBowEnergy');
+        const stops = bowGradient.querySelectorAll('stop');
+        stops.forEach(stop => {
+          stop.setAttribute('stop-color', color);
         });
         setActiveButton('.option-group:nth-child(4)', color);
       }
@@ -360,45 +1077,93 @@
         }
       }
 
-      // set up start drag event
-      window.addEventListener("mousedown", draw);
+      function svgToScreen(svgX, svgY) {
+        const svgRect = svg.getBoundingClientRect();
+        const svgViewBox = svg.viewBox.baseVal;
+        
+        const scaleX = svgRect.width / svgViewBox.width;
+        const scaleY = svgRect.height / svgViewBox.height;
+        
+        return {
+          x: svgRect.left + (svgX * scaleX),
+          y: svgRect.top + (svgY * scaleY)
+        };
+      }
+
+      function triggerBowEffects() {
+        const energyField = document.getElementById('bowEnergyField');
+        const animations = energyField.querySelectorAll('animate');
+        animations.forEach(anim => anim.beginElement());
+        
+        const bowScreenCoords = svgToScreen(100, 250);
+        aaaParticleSystem.createBowBurst(bowScreenCoords.x, bowScreenCoords.y);
+        
+        const stringVibration = document.getElementById('stringVibration');
+        TweenMax.to(stringVibration, 1, {
+          opacity: 1,
+          onComplete: () => {
+            TweenMax.to(stringVibration, 0.5, { opacity: 0 });
+          }
+        });
+      }
+
+      function isNearBow(mouseX, mouseY) {
+        cursor.x = mouseX;
+        cursor.y = mouseY;
+        const svgPoint = cursor.matrixTransform(svg.getScreenCTM().inverse());
+        
+        const bowArea = {
+          x: 50,
+          y: 180,
+          width: 200,
+          height: 140
+        };
+        
+        return svgPoint.x >= bowArea.x && 
+               svgPoint.x <= bowArea.x + bowArea.width &&
+               svgPoint.y >= bowArea.y && 
+               svgPoint.y <= bowArea.y + bowArea.height;
+      }
+
+      // ENHANCED: Game Controls with dynamic trajectory updating
+      window.addEventListener("mousedown", function(e) {
+        if (isNearBow(e.clientX, e.clientY)) {
+          draw(e);
+        }
+      });
 
       function draw(e) {
-        // pull back arrow
         randomAngle = (Math.random() * Math.PI * 0.03) - 0.015;
-        TweenMax.to(".arrow-angle use", 0.3, {
-          opacity: 1
-        });
+        TweenMax.to(".arrow-angle use", 0.3, { opacity: 1 });
         window.addEventListener("mousemove", aim);
         window.addEventListener("mouseup", loose);
         aim(e);
       }
 
       function aim(e) {
-        // get mouse position in relation to svg position and scale
         var point = getMouseSVG(e);
         point.x = Math.min(point.x, pivot.x - 7);
         point.y = Math.max(point.y, pivot.y + 7);
         var dx = point.x - pivot.x;
         var dy = point.y - pivot.y;
-        // Make it more difficult by adding random angle each time
         var angle = Math.atan2(dy, dx) + randomAngle;
         var bowAngle = angle - Math.PI;
         var distance = Math.min(Math.sqrt((dx * dx) + (dy * dy)), 50);
         var scale = Math.min(Math.max(distance / 30, 1), 2);
+        
         TweenMax.to("#bow", 0.3, {
           scaleX: scale,
           rotation: bowAngle + "rad",
           transformOrigin: "right center"
         });
-        var arrowX = Math.min(pivot.x - ((1 / scale) * distance), 88);
+        
         TweenMax.to(".arrow-angle", 0.3, {
           rotation: bowAngle + "rad",
           svgOrigin: "100 250"
         });
-        TweenMax.to(".arrow-angle use", 0.3, {
-          x: -distance
-        });
+        
+        TweenMax.to(".arrow-angle use", 0.3, { x: -distance });
+        
         TweenMax.to("#bow polyline", 0.3, {
           attr: {
             points: "88,200 " + Math.min(pivot.x - ((1 / scale) * distance), 88) + ",250 88,300"
@@ -411,38 +1176,81 @@
           y: (Math.sin(bowAngle) * radius)
         };
         var arcWidth = offset.x * 3;
+        var newPath = "M100,250c" + offset.x + "," + offset.y + "," + (arcWidth - offset.x) + "," + (offset.y + 50) + "," + arcWidth + ",50";
 
+        // EXTREME: Update ALL trajectory paths based on current arrow style
+        updateTrajectoryPaths(newPath, distance);
+      }
+
+      function updateTrajectoryPaths(pathData, distance) {
+        const opacity = distance/60;
+        
+        // Update default trajectory
         TweenMax.to("#arc", 0.3, {
-          attr: {
-            d: "M100,250c" + offset.x + "," + offset.y + "," + (arcWidth - offset.x) + "," + (offset.y + 50) + "," + arcWidth + ",50"
-          },
-            autoAlpha: distance/60
+          attr: { d: pathData },
+          autoAlpha: opacity
+        });
+        TweenMax.to("#arcGlow", 0.3, {
+          attr: { d: pathData },
+          opacity: opacity * 0.3
+        });
+
+        // Update fire trajectory
+        TweenMax.to("#arc-fire", 0.3, {
+          attr: { d: pathData },
+          autoAlpha: opacity
+        });
+        TweenMax.to("#arcGlow-fire", 0.3, {
+          attr: { d: pathData },
+          opacity: opacity * 0.4
+        });
+
+        // Update ice trajectory
+        TweenMax.to("#arc-ice", 0.3, {
+          attr: { d: pathData },
+          autoAlpha: opacity
+        });
+        TweenMax.to("#arcGlow-ice", 0.3, {
+          attr: { d: pathData },
+          opacity: opacity * 0.5
+        });
+
+        // Update gold trajectory
+        TweenMax.to("#arc-gold", 0.3, {
+          attr: { d: pathData },
+          autoAlpha: opacity
+        });
+        TweenMax.to("#arcGlow-gold", 0.3, {
+          attr: { d: pathData },
+          opacity: opacity * 0.6
         });
       }
 
       function loose() {
-        // release arrow
         window.removeEventListener("mousemove", aim);
         window.removeEventListener("mouseup", loose);
+
+        triggerBowEffects();
 
         TweenMax.to("#bow", 0.4, {
           scaleX: 1,
           transformOrigin: "right center",
           ease: Elastic.easeOut
         });
+        
         TweenMax.to("#bow polyline", 0.4, {
-          attr: {
-            points: "88,200 88,250 88,300"
-          },
+          attr: { points: "88,200 88,250 88,300" },
           ease: Elastic.easeOut
         });
-        // duplicate arrow with current style
+        
         var newArrow = document.createElementNS("http://www.w3.org/2000/svg", "use");
         newArrow.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "#arrow-" + currentArrowStyle);
         arrows.appendChild(newArrow);
 
-        // animate arrow along path
-        var path = MorphSVGPlugin.pathDataToBezier("#arc");
+        // EXTREME: Use the appropriate trajectory path based on arrow style
+        var pathSelector = currentArrowStyle === 'default' ? "#arc" : "#arc-" + currentArrowStyle;
+        var path = MorphSVGPlugin.pathDataToBezier(pathSelector);
+        
         TweenMax.to([newArrow], 0.5, {
           force3D: true,
           bezier: {
@@ -455,17 +1263,15 @@
           onComplete: onMiss,
           ease: Linear.easeNone
         });
-        TweenMax.to("#arc", 0.3, {
-          opacity: 0
-        });
-        //hide previous arrow
-        TweenMax.set(".arrow-angle use", {
-          opacity: 0
-        });
+        
+        // Hide all trajectory paths
+        TweenMax.to("#arc, #arc-fire, #arc-ice, #arc-gold", 0.3, { opacity: 0 });
+        TweenMax.to("#arcGlow, #arcGlow-fire, #arcGlow-ice, #arcGlow-gold", 0.3, { opacity: 0 });
+        
+        TweenMax.set(".arrow-angle use", { opacity: 0 });
       }
 
       function hitTest(tween) {
-        // check for collisions with arrow and target
         var arrow = tween.target[0];
         var transform = arrow._gsTransform;
         var radians = transform.rotation * Math.PI / 180;
@@ -474,34 +1280,49 @@
           y1: transform.y,
           x2: (Math.cos(radians) * 60) + transform.x,
           y2: (Math.sin(radians) * 60) + transform.y
-        }
+        };
 
         var intersection = getIntersection(arrowSegment, lineSegment);
         if (intersection.segment1 && intersection.segment2) {
           tween.pause();
+          
+          const screenCoords = svgToScreen(intersection.x, intersection.y);
+          aaaParticleSystem.createShockwave(screenCoords.x, screenCoords.y);
+          
+          switch(currentArrowStyle) {
+            case 'fire':
+              aaaParticleSystem.createFireExplosion(screenCoords.x, screenCoords.y);
+              break;
+            case 'ice':
+              aaaParticleSystem.createIceExplosion(screenCoords.x, screenCoords.y);
+              break;
+            case 'gold':
+              aaaParticleSystem.createGoldExplosion(screenCoords.x, screenCoords.y);
+              break;
+          }
+          
           var dx = intersection.x - target.x;
           var dy = intersection.y - target.y;
           var distance = Math.sqrt((dx * dx) + (dy * dy));
           var selector = ".hit";
           if (distance < 7) {
-            selector = ".bullseye"
+            selector = ".bullseye";
+            setTimeout(() => {
+              aaaParticleSystem.createShockwave(screenCoords.x, screenCoords.y);
+            }, 300);
           }
           showMessage(selector);
         }
       }
 
       function onMiss() {
-        // Damn!
         showMessage(".miss");
       }
 
       function showMessage(selector) {
-        // handle all text animations by providing selector
         TweenMax.killTweensOf(selector);
         TweenMax.killChildTweensOf(selector);
-        TweenMax.set(selector, {
-          autoAlpha: 1
-        });
+        TweenMax.set(selector, { autoAlpha: 1 });
         TweenMax.staggerFromTo(selector + " path", .5, {
           rotation: -5,
           scale: 0,
@@ -519,14 +1340,12 @@
       }
 
       function getMouseSVG(e) {
-        // normalize mouse position within svg coordinates
         cursor.x = e.clientX;
         cursor.y = e.clientY;
         return cursor.matrixTransform(svg.getScreenCTM().inverse());
       }
 
       function getIntersection(segment1, segment2) {
-        // find intersection point of two line segments and whether or not the point is on either line segment
         var dx1 = segment1.x2 - segment1.x1;
         var dy1 = segment1.y2 - segment1.y1;
         var dx2 = segment2.x2 - segment2.x1;
