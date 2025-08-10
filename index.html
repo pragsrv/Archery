@@ -1,998 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Archery Master</title>
+  <head>
+    <title>Archery Game</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #0c0c1e 0%, #1a1a2e 50%, #16213e 100%);
-            overflow: hidden;
-            font-family: 'Orbitron', monospace;
-            height: 100vh;
-            position: relative;
-        }
-        
-        /* Animated background stars */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite alternate;
-        }
-        
-        @keyframes twinkle {
-            0% { opacity: 0.3; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.2); }
-        }
-        
-        /* Game container */
-        .game-container {
-            position: relative;
-            width: 100%;
-            height: 100vh;
-            z-index: 1;
-        }
-        
-        /* UI Elements */
-        .ui-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        .score-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 255, 127, 0.1);
-            border: 2px solid #00ff7f;
-            border-radius: 15px;
-            padding: 15px 25px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 30px rgba(0, 255, 127, 0.3);
-        }
-        
-        .score-text {
-            color: #00ff7f;
-            font-size: 18px;
-            font-weight: 700;
-            text-shadow: 0 0 10px #00ff7f;
-            margin: 5px 0;
-        }
-        
-        .wind-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 69, 0, 0.1);
-            border: 2px solid #ff4500;
-            border-radius: 15px;
-            padding: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 30px rgba(255, 69, 0, 0.3);
-            text-align: center;
-        }
-        
-        .wind-text {
-            color: #ff4500;
-            font-size: 16px;
-            font-weight: 700;
-            text-shadow: 0 0 10px #ff4500;
-        }
-        
-        .instructions {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 16px;
-            font-weight: 400;
-            text-align: center;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
-        }
-        
-        /* SVG Game Area */
-        svg {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 2;
-        }
-        
-        /* Arrow trail effect */
-        .arrow-trail {
-            filter: drop-shadow(0 0 8px #00ffff);
-        }
-        
-        /* Target glow effect */
-        .target-glow {
-            filter: drop-shadow(0 0 20px #ff6b6b) drop-shadow(0 0 40px #ffd93d);
-        }
-        
-        /* Bow enhancement */
-        .bow-enhanced {
-            filter: drop-shadow(0 0 10px #00ff7f);
-        }
-        
-        /* Particle effects */
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
-        }
-        
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: radial-gradient(circle, #ffd700 0%, #ff6b6b 100%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-        
-        /* Result messages enhanced */
-        .result-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 48px;
-            font-weight: 900;
-            text-align: center;
-            z-index: 20;
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .bullseye-msg {
-            color: #ffd700;
-            text-shadow: 0 0 30px #ffd700;
-            animation: bullseyeGlow 0.5s ease-out;
-        }
-        
-        .hit-msg {
-            color: #00ff7f;
-            text-shadow: 0 0 30px #00ff7f;
-            animation: hitGlow 0.5s ease-out;
-        }
-        
-        .miss-msg {
-            color: #ff4757;
-            text-shadow: 0 0 30px #ff4757;
-            animation: missShake 0.5s ease-out;
-        }
-        
-        @keyframes bullseyeGlow {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        }
-        
-        @keyframes hitGlow {
-            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        }
-        
-        @keyframes missShake {
-            0%, 100% { transform: translate(-50%, -50%); }
-            25% { transform: translate(-48%, -50%); }
-            75% { transform: translate(-52%, -50%); }
-        }
-        
-        /* Power meter */
-        .power-meter {
-            position: absolute;
-            left: 130px;
-            top: 200px;
-            width: 20px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #00ffff;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .power-fill {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(0deg, #00ff00 0%, #ffff00 50%, #ff0000 100%);
-            transition: height 0.1s ease-out;
-        }
+      body{
+        background:#222;
+        margin:20px;
+      }
+      svg{
+        width:100%;
+        height:100%;
+        position:fixed;
+        top:0;
+        left:0;
+      }
+      span{
+        color:white;
+        font-family:sans-serif;
+        opacity:.3;
+      }
     </style>
-</head>
-<body>
-    <!-- Animated background -->
-    <div class="stars" id="stars"></div>
-    
-    <!-- Particle effects container -->
-    <div class="particles" id="particles"></div>
-    
-    <!-- UI Overlay -->
-    <div class="ui-overlay">
-        <div class="score-panel">
-            <div class="score-text">SCORE: <span id="score">0</span></div>
-            <div class="score-text">ARROWS: <span id="arrows">10</span></div>
-            <div class="score-text">STREAK: <span id="streak">0</span></div>
-        </div>
-        
-        <div class="wind-indicator">
-            <div class="wind-text">WIND</div>
-            <div class="wind-text" id="wind-strength">2.3 →</div>
-        </div>
-        
-        <div class="power-meter">
-            <div class="power-fill" id="power-fill"></div>
-        </div>
-        
-        <div class="instructions">
-            CLICK AND DRAG TO AIM • RELEASE TO SHOOT • MASTER THE WIND
-        </div>
-    </div>
-    
-    <!-- Result messages -->
-    <div class="result-message bullseye-msg" id="bullseye-msg">BULLSEYE!</div>
-    <div class="result-message hit-msg" id="hit-msg">HIT!</div>
-    <div class="result-message miss-msg" id="miss-msg">MISS!</div>
-    
-    <!-- Game SVG -->
-    <div class="game-container">
-        <svg id="game" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" overflow="visible">
-            <!-- Enhanced gradient definitions -->
-            <defs>
-                <linearGradient id="ArcGradient">
-                    <stop offset="0" stop-color="#00ffff" stop-opacity="0.8"/>
-                    <stop offset="50%" stop-color="#00ffff" stop-opacity="0.4"/>
-                    <stop offset="100%" stop-color="#00ffff" stop-opacity="0"/>
-                </linearGradient>
-                
-                <linearGradient id="ArrowGradient">
-                    <stop offset="0" stop-color="#silver"/>
-                    <stop offset="100%" stop-color="#gold"/>
-                </linearGradient>
-                
-                <radialGradient id="TargetGlow">
-                    <stop offset="0" stop-color="#ffd700" stop-opacity="0.8"/>
-                    <stop offset="50%" stop-color="#ff6b6b" stop-opacity="0.4"/>
-                    <stop offset="100%" stop-color="#ff6b6b" stop-opacity="0"/>
-                </radialGradient>
-                
-                <filter id="glow">
-                    <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
-                    <feMerge> 
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                </filter>
-                
-                <!-- Enhanced arrow design -->
-                <g id="arrow">
-                    <line x2="80" stroke="url(#ArrowGradient)" stroke-width="3" stroke-linecap="round"/>
-                    <polygon fill="url(#ArrowGradient)" points="84 0 76 3 74 0 76 -3" stroke="#gold" stroke-width="1"/>
-                    <polygon fill="#ff4757" points="4 -4 -6 -4 -2 0 -6 4 4 4 8 0" stroke="#darkred" stroke-width="1"/>
-                </g>
-                
-                <!-- Environmental elements -->
-                <g id="grass">
-                    <path d="M0,580 Q50,560 100,580 Q150,560 200,580 Q250,560 300,580 Q350,560 400,580 Q450,560 500,580 Q550,560 600,580 Q650,560 700,580 Q750,560 800,580 Q850,560 900,580 Q950,560 1000,580 Q1050,560 1100,580 Q1150,560 1200,580 L1200,600 L0,600 Z" 
-                          fill="#1a5d1a" stroke="#2d8f2d" stroke-width="2"/>
-                </g>
-                
-                <!-- Cloud effects -->
-                <g id="clouds" opacity="0.3">
-                    <ellipse cx="200" cy="100" rx="60" ry="30" fill="white"/>
-                    <ellipse cx="180" cy="90" rx="40" ry="25" fill="white"/>
-                    <ellipse cx="220" cy="85" rx="50" ry="28" fill="white"/>
-                </g>
-            </defs>
-            
-            <!-- Background elements -->
-            <use xlink:href="#grass"/>
-            <use xlink:href="#clouds"/>
-            
-            <!-- Trajectory arc -->
-            <path id="arc" fill="none" stroke="url(#ArcGradient)" stroke-width="6" 
-                  d="M120,300c300-500,700-500,1000,0" pointer-events="none" opacity="0" filter="url(#glow)"/>
-            
-            <!-- Enhanced target with multiple rings -->
-            <g id="target" class="target-glow" transform="translate(1050, 300)">
-                <!-- Outer glow -->
-                <circle cx="0" cy="0" r="80" fill="url(#TargetGlow)" opacity="0.3"/>
-                
-                <!-- Target rings -->
-                <circle cx="0" cy="0" r="60" fill="#ffffff" stroke="#333" stroke-width="3"/>
-                <circle cx="0" cy="0" r="48" fill="#000000" stroke="#333" stroke-width="2"/>
-                <circle cx="0" cy="0" r="36" fill="#4169e1" stroke="#333" stroke-width="2"/>
-                <circle cx="0" cy="0" r="24" fill="#ff0000" stroke="#333" stroke-width="2"/>
-                <circle cx="0" cy="0" r="12" fill="#ffd700" stroke="#333" stroke-width="2"/>
-                
-                <!-- Center bullseye -->
-                <circle cx="0" cy="0" r="6" fill="#ff4500"/>
-                
-                <!-- Target stand -->
-                <rect x="-5" y="60" width="10" height="40" fill="#8b4513"/>
-                <polygon points="-15,100 15,100 10,110 -10,110" fill="#654321"/>
+  </head>
+  <body>
+    <svg id="game" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" overflow="visible">
+      <linearGradient id="ArcGradient" >
+          <stop offset="0"  stop-color="#fff" stop-opacity=".2"/>
+          <stop offset="50%" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient>
+        <path id="arc" fill="none" stroke="url(#ArcGradient)" stroke-width="4" d="M100,250c250-400,550-400,800,0"  pointer-events="none"/>
+        <defs>
+            <g id="arrow">
+                <line x2="60" fill="none" stroke="#888" stroke-width="2" />
+                <polygon fill="#888" points="64 0 58 2 56 0 58 -2" />
+                <polygon fill="#88ce02" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
             </g>
-            
-            <!-- Enhanced bow -->
-            <g id="bow" class="bow-enhanced" transform="translate(120, 300)" fill="none" stroke-linecap="round">
-                <path stroke="#8b4513" stroke-width="8" d="M0,-60 Q-5,0 0,60" stroke-linecap="round"/>
-                <path stroke="#654321" stroke-width="4" d="M0,-60 Q-3,0 0,60" stroke-linecap="round"/>
-                <path id="bowstring" stroke="#00ff7f" stroke-width="3" d="M0,-60 L0,60" filter="url(#glow)"/>
-            </g>
-            
-            <!-- Arrow holder -->
-            <g class="arrow-angle" transform="translate(120, 300)">
-                <use xlink:href="#arrow" opacity="1"/>
-            </g>
-            
-            <!-- Arrows container -->
-            <g class="arrows" pointer-events="none"></g>
-            
-            <!-- Wind effect lines -->
-            <g id="wind-lines" opacity="0.6">
-                <!-- Will be populated by JavaScript -->
-            </g>
-        </svg>
-    </div>
+        </defs>
+        <g id="target">
+            <path fill="#FFF" d="M924.2,274.2c-21.5,21.5-45.9,19.9-52,3.2c-4.4-12.1,2.4-29.2,14.2-41c11.8-11.8,29-18.6,41-14.2 C944.1,228.3,945.7,252.8,924.2,274.2z" />
+            <path fill="#F4531C" d="M915.8,265.8c-14.1,14.1-30.8,14.6-36,4.1c-4.1-8.3,0.5-21.3,9.7-30.5s22.2-13.8,30.5-9.7 C930.4,235,929.9,251.7,915.8,265.8z" />
+            <path fill="#FFF" d="M908.9,258.9c-8,8-17.9,9.2-21.6,3.5c-3.2-4.9-0.5-13.4,5.6-19.5c6.1-6.1,14.6-8.8,19.5-5.6 C918.1,241,916.9,250.9,908.9,258.9z" />
+            <path fill="#F4531C" d="M903.2,253.2c-2.9,2.9-6.7,3.6-8.3,1.7c-1.5-1.8-0.6-5.4,2-8c2.6-2.6,6.2-3.6,8-2 C906.8,246.5,906.1,250.2,903.2,253.2z" />
+        </g>
+        <g id="bow" fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke" pointer-events="none">
+          <polyline fill="none" stroke="#ddd" stroke-linecap="round" points="88,200 88,250 88,300"/>
+          <path fill="none" stroke="#88ce02" stroke-width="3" stroke-linecap="round" d="M88,300 c0-10.1,12-25.1,12-50s-12-39.9-12-50"/>
+        </g>
+      <g class="arrow-angle"><use x="100" y="250" xlink:href="#arrow"/></g>
+      <clipPath id="mask">
+        <polygon opacity=".5" points="0,0 1500,0 1500,200 970,290 950,240 925,220 875,280 890,295 920,310 0,350" pointer-events="none"/>
+      </clipPath>
+      <g class="arrows" clip-path="url(#mask)"  pointer-events="none">
+      </g>
+      <g class="miss" fill="#aaa" opacity="0" transform="translate(0, 100)">
+        <path d="M358 194L363 118 386 120 400 153 416 121 440 119 446 203 419 212 416 163 401 180 380 160 381 204"/>
+        <path d="M450 120L458 200 475 192 474 121"/>
+        <path d="M537 118L487 118 485 160 515 162 509 177 482 171 482 193 529 199 538 148 501 146 508 133 537 137"/>
+        <path d="M540 202L543 178 570 186 569 168 544 167 546 122 590 116 586 142 561 140 560 152 586 153 586 205"/>
+        <path d="M595,215l5-23l31,0l-5,29L595,215z M627,176l13-70l-41-0l-0,70L627,176z"/>
+      </g>
+      <g class="bullseye" fill="#F4531C" opacity="0">
+        <path d="M322,159l15-21l-27-13l-32,13l15,71l41-14l7-32L322,159z M292,142h20l3,8l-16,8 L292,142z M321,182l-18,9l-4-18l23-2V182z"/>
+        <path d="M340 131L359 125 362 169 381 167 386 123 405 129 392 183 351 186z"/>
+        <path d="M413 119L402 188 450 196 454 175 422 175 438 120z"/>
+        <path d="M432 167L454 169 466 154 451 151 478 115 453 113z"/>
+        <path d="M524 109L492 112 466 148 487 155 491 172 464 167 463 184 502 191 513 143 487 141 496 125 517 126z"/>
+        <path d="M537 114L512 189 558 199 566 174 533 175 539 162 553 164 558 150 543 145 547 134 566 148 575 124z"/>
+        <path d="M577 118L587 158 570 198 587 204 626 118 606 118 598 141 590 112z"/>
+        <path d="M635 122L599 198 643 207 649 188 624 188 630 170 639 178 645 162 637 158 649 143 662 151 670 134z"/>
+        <path d="M649,220l4-21l28,4l-6,25L649,220z M681,191l40-79l-35-8L659,184L681,191z"/>
+      </g>
+      <g class="hit" fill="#ffcc00" opacity="0" transform="translate(180, -80) rotate(12) ">
+        <path d="M383 114L385 195 407 191 406 160 422 155 418 191 436 189 444 112 423 119 422 141 407 146 400 113"/>
+        <path d="M449 185L453 113 477 112 464 186"/>
+        <path d="M486 113L484 130 506 130 481 188 506 187 520 131 540 135 545 119"/>
+        <path d="M526,195l5-20l22,5l-9,16L526,195z M558,164l32-44l-35-9l-19,51L558,164z"/>
+      </g>
+    </svg>
 
-    <!-- Enhanced JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <span>Draw back an arrow and launch it!</span>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js'></script>
+    <script src='//s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MorphSVGPlugin.min.js'></script>
     <script>
-        class AdvancedArcheryGame {
-            constructor() {
-                this.svg = document.querySelector("svg");
-                this.cursor = this.svg.createSVGPoint();
-                this.arrows = document.querySelector(".arrows");
-                
-                // Game state
-                this.score = 0;
-                this.arrowCount = 10;
-                this.streak = 0;
-                this.wind = { x: 0, y: 0 };
-                this.power = 0;
-                this.isAiming = false;
-                
-                // Game settings
-                this.pivot = { x: 120, y: 300 };
-                this.target = { x: 1050, y: 300 };
-                
-                this.init();
-            }
-            
-            init() {
-                this.createStars();
-                this.updateWind();
-                this.createWindLines();
-                this.setupEventListeners();
-                this.startGameLoop();
-                
-                // Initial aim position
-                this.aim({ clientX: 400, clientY: 350 });
-            }
-            
-            createStars() {
-                const starsContainer = document.getElementById('stars');
-                for (let i = 0; i < 100; i++) {
-                    const star = document.createElement('div');
-                    star.className = 'star';
-                    star.style.left = Math.random() * 100 + '%';
-                    star.style.top = Math.random() * 100 + '%';
-                    star.style.animationDelay = Math.random() * 3 + 's';
-                    starsContainer.appendChild(star);
-                }
-            }
-            
-            createWindLines() {
-                const windContainer = document.getElementById('wind-lines');
-                for (let i = 0; i < 20; i++) {
-                    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                    line.setAttribute('x1', Math.random() * 1200);
-                    line.setAttribute('y1', Math.random() * 200 + 100);
-                    line.setAttribute('x2', Math.random() * 1200 + 20);
-                    line.setAttribute('y2', Math.random() * 200 + 100);
-                    line.setAttribute('stroke', '#ffffff');
-                    line.setAttribute('stroke-width', '1');
-                    line.setAttribute('opacity', '0.3');
-                    windContainer.appendChild(line);
-                }
-                this.animateWindLines();
-            }
-            
-            animateWindLines() {
-                const lines = document.querySelectorAll('#wind-lines line');
-                lines.forEach(line => {
-                    gsap.to(line, {
-                        duration: 2 + Math.random() * 3,
-                        x: this.wind.x * 50,
-                        repeat: -1,
-                        yoyo: true,
-                        ease: "sine.inOut"
-                    });
-                });
-            }
-            
-            updateWind() {
-                this.wind.x = (Math.random() - 0.5) * 4;
-                this.wind.y = (Math.random() - 0.5) * 2;
-                
-                const windStrength = Math.sqrt(this.wind.x * this.wind.x + this.wind.y * this.wind.y);
-                const windDirection = this.wind.x > 0 ? '→' : '←';
-                document.getElementById('wind-strength').textContent = `${windStrength.toFixed(1)} ${windDirection}`;
-                
-                // Update wind again after random interval
-                setTimeout(() => this.updateWind(), 5000 + Math.random() * 10000);
-            }
-            
-            setupEventListeners() {
-                window.addEventListener("mousedown", (e) => this.startAiming(e));
-                window.addEventListener("touchstart", (e) => this.startAiming(e.touches[0]));
-            }
-            
-            startAiming(e) {
-                if (this.arrowCount <= 0) return;
-                
-                this.isAiming = true;
-                this.power = 0;
-                
-                const moveHandler = (e) => this.aim(e.touches ? e.touches[0] : e);
-                const endHandler = () => this.shoot(moveHandler, endHandler);
-                
-                window.addEventListener("mousemove", moveHandler);
-                window.addEventListener("mouseup", endHandler);
-                window.addEventListener("touchmove", moveHandler);
-                window.addEventListener("touchend", endHandler);
-                
-                this.aim(e);
-                this.startPowerBuildup();
-            }
-            
-            startPowerBuildup() {
-                const powerInterval = setInterval(() => {
-                    if (!this.isAiming) {
-                        clearInterval(powerInterval);
-                        return;
-                    }
-                    this.power = Math.min(this.power + 2, 100);
-                    document.getElementById('power-fill').style.height = this.power + '%';
-                }, 50);
-            }
-            
-            aim(e) {
-                if (!this.isAiming) return;
-                
-                const point = this.getMouseSVG(e);
-                const clampedPoint = {
-                    x: Math.min(point.x, this.pivot.x - 10),
-                    y: Math.max(point.y, this.pivot.y + 10)
-                };
-                
-                const dx = clampedPoint.x - this.pivot.x;
-                const dy = clampedPoint.y - this.pivot.y;
-                const angle = Math.atan2(dy, dx);
-                const distance = Math.min(Math.sqrt(dx * dx + dy * dy), 80);
-                
-                // Store angle for arrow shooting
-                this.currentAngle = angle;
-                this.currentPower = distance;
-                
-                // Update bow
-                gsap.to("#bow", {
-                    duration: 0.3,
-                    rotation: angle * 180 / Math.PI + "deg",
-                    transformOrigin: "0 0"
-                });
-                
-                // Update arrow
-                gsap.to(".arrow-angle", {
-                    duration: 0.3,
-                    rotation: angle * 180 / Math.PI + "deg",
-                    transformOrigin: "0 0"
-                });
-                
-                gsap.to(".arrow-angle use", {
-                    duration: 0.3,
-                    x: -distance * 0.8
-                });
-                
-                // Update bowstring
-                const stringCurve = distance * 0.6;
-                gsap.to("#bowstring", {
-                    duration: 0.3,
-                    attr: {
-                        d: `M0,-60 Q${-stringCurve},0 0,60`
-                    }
-                });
-                
-                // Update trajectory arc
-                this.updateTrajectoryArc(angle, distance);
-            }
-            
-            updateTrajectoryArc(angle, power) {
-                const startX = this.pivot.x + Math.cos(angle - Math.PI) * 20;
-                const startY = this.pivot.y + Math.sin(angle - Math.PI) * 20;
-                
-                const velocity = power * 2;
-                const windEffect = this.wind.x * 0.5;
-                
-                const controlX = startX + Math.cos(angle - Math.PI) * velocity * 4 + windEffect;
-                const controlY = startY + Math.sin(angle - Math.PI) * velocity * 2 - velocity * 0.5;
-                
-                const endX = this.target.x + windEffect * 2;
-                const endY = this.target.y;
-                
-                gsap.to("#arc", {
-                    duration: 0.3,
-                    attr: {
-                        d: `M${startX},${startY} Q${controlX},${controlY} ${endX},${endY}`
-                    },
-                    opacity: power / 100
-                });
-            }
-            
-            shoot(moveHandler, endHandler) {
-                this.isAiming = false;
-                window.removeEventListener("mousemove", moveHandler);
-                window.removeEventListener("mouseup", endHandler);
-                window.removeEventListener("touchmove", moveHandler);
-                window.removeEventListener("touchend", endHandler);
-                
-                if (this.arrowCount <= 0) return;
-                
-                this.arrowCount--;
-                document.getElementById('arrows').textContent = this.arrowCount;
-                
-                // Reset bow with snap-back effect
-                gsap.to("#bow", {
-                    duration: 0.6,
-                    rotation: "0deg",
-                    ease: "elastic.out(1, 0.5)"
-                });
-                
-                gsap.to(".arrow-angle", {
-                    duration: 0.6,
-                    rotation: "0deg",
-                    ease: "elastic.out(1, 0.5)"
-                });
-                
-                gsap.to("#bowstring", {
-                    duration: 0.6,
-                    attr: { d: "M0,-60 L0,60" },
-                    ease: "elastic.out(1, 0.5)"
-                });
-                
-                // Create and animate arrow
-                this.createArrow();
-                
-                // Hide trajectory
-                gsap.to("#arc", { duration: 0.3, opacity: 0 });
-                
-                // Reset power meter
-                document.getElementById('power-fill').style.height = '0%';
-                this.power = 0;
-                
-                // Hide aiming arrow
-                gsap.to(".arrow-angle use", { duration: 0.2, opacity: 0 });
-            }
-            
-            createArrow() {
-                const newArrow = document.createElementNS("http://www.w3.org/2000/svg", "use");
-                newArrow.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "#arrow");
-                newArrow.setAttribute('class', 'arrow-trail');
-                this.arrows.appendChild(newArrow);
-                
-                // Get current bow angle and convert from rotation property
-                const bowRotation = gsap.getProperty(".arrow-angle", "rotation");
-                const angle = parseFloat(bowRotation) * Math.PI / 180; // Convert to radians
-                
-                const velocity = Math.max(this.power * 4, 200); // Minimum velocity
-                const windX = this.wind.x * 30;
-                const windY = this.wind.y * 15;
-                
-                const startX = this.pivot.x;
-                const startY = this.pivot.y;
-                
-                // Calculate trajectory points
-                const distance = Math.sqrt(Math.pow(this.target.x - startX, 2) + Math.pow(this.target.y - startY, 2));
-                const flightTime = distance / velocity * 2;
-                
-                // Physics-based trajectory
-                const vx = Math.cos(angle) * velocity;
-                const vy = Math.sin(angle) * velocity;
-                const gravity = 200;
-                
-                // Calculate end position with physics
-                const endX = startX + vx * flightTime + windX;
-                const endY = startY + vy * flightTime + 0.5 * gravity * flightTime * flightTime + windY;
-                
-                // Set initial position
-                gsap.set(newArrow, {
-                    x: startX,
-                    y: startY,
-                    rotation: angle + "rad"
-                });
-                
-                // Animate arrow with physics-based motion
-                const tl = gsap.timeline();
-                
-                tl.to(newArrow, {
-                    duration: flightTime,
-                    motionPath: {
-                        path: [
-                            { x: startX, y: startY },
-                            { x: startX + vx * flightTime * 0.3, y: startY + vy * flightTime * 0.3 + windY * 0.3 },
-                            { x: startX + vx * flightTime * 0.7 + windX * 0.7, y: startY + vy * flightTime * 0.7 + 0.5 * gravity * (flightTime * 0.7) * (flightTime * 0.7) + windY * 0.7 },
-                            { x: endX, y: endY }
-                        ],
-                        autoRotate: true,
-                        curviness: 1.2
-                    },
-                    ease: "none",
-                    onUpdate: () => this.checkHit(newArrow),
-                    onComplete: () => this.onArrowLand(newArrow, endX, endY)
-                });
-                
-                // Alternative fallback animation if MotionPath isn't available
-                if (!gsap.plugins.MotionPathPlugin) {
-                    gsap.killTweensOf(newArrow);
-                    
-                    // Simple bezier curve animation
-                    const midX = startX + (endX - startX) * 0.5 + windX * 0.5;
-                    const midY = startY + (endY - startY) * 0.3 - 100; // Arc height
-                    
-                    gsap.to(newArrow, {
-                        duration: flightTime,
-                        bezier: {
-                            type: "cubic",
-                            values: [
-                                { x: startX, y: startY },
-                                { x: midX, y: midY },
-                                { x: endX, y: endY }
-                            ],
-                            autoRotate: ["x", "y", "rotation"]
-                        },
-                        ease: "power2.out",
-                        onUpdate: () => this.checkHit(newArrow),
-                        onComplete: () => this.onArrowLand(newArrow, endX, endY)
-                    });
-                }
-                
-                // Arrow trail effect
-                this.createArrowTrail(newArrow);
-                
-                // Show aiming arrow again after delay
-                setTimeout(() => {
-                    if (this.arrowCount > 0) {
-                        gsap.to(".arrow-angle use", { duration: 0.3, opacity: 1 });
-                    }
-                }, 1500);
-            }
-            
-            createArrowTrail(arrow) {
-                const trailCount = 8;
-                const trailDelay = 80;
-                
-                for (let i = 0; i < trailCount; i++) {
-                    setTimeout(() => {
-                        if (!arrow.parentNode) return; // Arrow might be removed
-                        
-                        const trail = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-                        trail.setAttribute('r', '3');
-                        trail.setAttribute('fill', '#00ffff');
-                        trail.setAttribute('opacity', '0.8');
-                        
-                        // Get current arrow position
-                        const arrowX = gsap.getProperty(arrow, "x") || this.pivot.x;
-                        const arrowY = gsap.getProperty(arrow, "y") || this.pivot.y;
-                        
-                        trail.setAttribute('cx', arrowX);
-                        trail.setAttribute('cy', arrowY);
-                        this.arrows.appendChild(trail);
-                        
-                        gsap.to(trail, {
-                            duration: 1.2,
-                            opacity: 0,
-                            r: 1,
-                            onComplete: () => {
-                                if (trail.parentNode) {
-                                    trail.remove();
-                                }
-                            }
-                        });
-                    }, i * trailDelay);
-                }
-            }
-            
-            checkHit(arrow) {
-                const arrowX = gsap.getProperty(arrow, "x");
-                const arrowY = gsap.getProperty(arrow, "y");
-                
-                const distance = Math.sqrt(
-                    Math.pow(arrowX - this.target.x, 2) + 
-                    Math.pow(arrowY - this.target.y, 2)
-                );
-                
-                if (distance < 70 && !arrow.hasHit) {
-                    arrow.hasHit = true;
-                    gsap.killTweensOf(arrow);
-                    this.processHit(distance, arrowX, arrowY);
-                }
-            }
-            
-            processHit(distance, x, y) {
-                let points = 0;
-                let message = '';
-                let messageId = '';
-                
-                if (distance < 12) {
-                    points = 100;
-                    message = 'BULLSEYE!';
-                    messageId = 'bullseye-msg';
-                    this.streak++;
-                } else if (distance < 24) {
-                    points = 80;
-                    message = 'EXCELLENT!';
-                    messageId = 'hit-msg';
-                    this.streak++;
-                } else if (distance < 36) {
-                    points = 60;
-                    message = 'GREAT!';
-                    messageId = 'hit-msg';
-                    this.streak++;
-                } else if (distance < 48) {
-                    points = 40;
-                    message = 'GOOD!';
-                    messageId = 'hit-msg';
-                    this.streak++;
-                } else {
-                    points = 20;
-                    message = 'HIT!';
-                    messageId = 'hit-msg';
-                    this.streak++;
-                }
-                
-                // Bonus for streak
-                points += this.streak * 5;
-                this.score += points;
-                
-                this.updateUI();
-                this.showMessage(message, messageId);
-                this.createHitEffect(x, y);
-            }
-            
-            onArrowLand(arrow, endX, endY) {
-                if (!arrow.hasHit) {
-                    const distance = Math.sqrt(
-                        Math.pow(endX - this.target.x, 2) + 
-                        Math.pow(endY - this.target.y, 2)
-                    );
-                    
-                    if (distance > 70) {
-                        this.streak = 0;
-                        this.showMessage('MISS!', 'miss-msg');
-                        this.updateUI();
-                    }
-                }
-                
-                // Check game over
-                if (this.arrowCount <= 0) {
-                    setTimeout(() => this.gameOver(), 2000);
-                }
-            }
-            
-            createHitEffect(x, y) {
-                // Create particle explosion
-                const particlesContainer = document.getElementById('particles');
-                
-                for (let i = 0; i < 15; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.left = (x / 1200 * 100) + '%';
-                    particle.style.top = (y / 600 * 100) + '%';
-                    particlesContainer.appendChild(particle);
-                    
-                    const angle = (Math.PI * 2 * i) / 15;
-                    const velocity = 50 + Math.random() * 100;
-                    
-                    gsap.to(particle, {
-                        duration: 1.5,
-                        x: Math.cos(angle) * velocity,
-                        y: Math.sin(angle) * velocity - 50,
-                        opacity: 0,
-                        scale: 0,
-                        ease: "power2.out",
-                        onComplete: () => particle.remove()
-                    });
-                }
-                
-                // Screen flash effect
-                const flash = document.createElement('div');
-                flash.style.position = 'fixed';
-                flash.style.top = '0';
-                flash.style.left = '0';
-                flash.style.width = '100%';
-                flash.style.height = '100%';
-                flash.style.background = 'rgba(255, 215, 0, 0.3)';
-                flash.style.pointerEvents = 'none';
-                flash.style.zIndex = '15';
-                document.body.appendChild(flash);
-                
-                gsap.to(flash, {
-                    duration: 0.3,
-                    opacity: 0,
-                    onComplete: () => flash.remove()
-                });
-            }
-            
-            showMessage(text, messageId) {
-                const messageElement = document.getElementById(messageId);
-                messageElement.textContent = text;
-                
-                gsap.fromTo(messageElement, 
-                    { opacity: 0, scale: 0.5 },
-                    { 
-                        duration: 0.5,
-                        opacity: 1,
-                        scale: 1,
-                        ease: "back.out(1.7)",
-                        onComplete: () => {
-                            gsap.to(messageElement, {
-                                duration: 0.5,
-                                delay: 1.5,
-                                opacity: 0,
-                                scale: 0.8
-                            });
-                        }
-                    }
-                );
-            }
-            
-            updateUI() {
-                document.getElementById('score').textContent = this.score;
-                document.getElementById('arrows').textContent = this.arrowCount;
-                document.getElementById('streak').textContent = this.streak;
-            }
-            
-            gameOver() {
-                let finalMessage = '';
-                if (this.score >= 800) {
-                    finalMessage = 'LEGENDARY ARCHER!';
-                } else if (this.score >= 600) {
-                    finalMessage = 'MASTER ARCHER!';
-                } else if (this.score >= 400) {
-                    finalMessage = 'SKILLED ARCHER!';
-                } else if (this.score >= 200) {
-                    finalMessage = 'APPRENTICE ARCHER!';
-                } else {
-                    finalMessage = 'KEEP PRACTICING!';
-                }
-                
-                const gameOverDiv = document.createElement('div');
-                gameOverDiv.style.position = 'fixed';
-                gameOverDiv.style.top = '50%';
-                gameOverDiv.style.left = '50%';
-                gameOverDiv.style.transform = 'translate(-50%, -50%)';
-                gameOverDiv.style.background = 'rgba(0, 0, 0, 0.9)';
-                gameOverDiv.style.color = '#fff';
-                gameOverDiv.style.padding = '40px';
-                gameOverDiv.style.borderRadius = '20px';
-                gameOverDiv.style.textAlign = 'center';
-                gameOverDiv.style.fontFamily = 'Orbitron, monospace';
-                gameOverDiv.style.border = '3px solid #00ff7f';
-                gameOverDiv.style.boxShadow = '0 0 50px rgba(0, 255, 127, 0.5)';
-                gameOverDiv.style.zIndex = '100';
-                gameOverDiv.innerHTML = `
-                    <h1 style="font-size: 36px; margin-bottom: 20px; color: #ffd700; text-shadow: 0 0 20px #ffd700;">${finalMessage}</h1>
-                    <p style="font-size: 24px; margin: 15px 0;">Final Score: <span style="color: #00ff7f;">${this.score}</span></p>
-                    <p style="font-size: 18px; margin: 10px 0;">Best Streak: <span style="color: #ff4757;">${this.streak}</span></p>
-                    <button onclick="location.reload()" style="
-                        background: linear-gradient(45deg, #00ff7f, #00ffff);
-                        border: none;
-                        padding: 15px 30px;
-                        margin-top: 20px;
-                        border-radius: 10px;
-                        font-family: Orbitron, monospace;
-                        font-weight: bold;
-                        font-size: 16px;
-                        cursor: pointer;
-                        transition: all 0.3s;
-                    " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">PLAY AGAIN</button>
-                `;
-                document.body.appendChild(gameOverDiv);
-                
-                gsap.fromTo(gameOverDiv, 
-                    { opacity: 0, scale: 0.5 },
-                    { duration: 0.8, opacity: 1, scale: 1, ease: "back.out(1.7)" }
-                );
-            }
-            
-            getMouseSVG(e) {
-                this.cursor.x = e.clientX;
-                this.cursor.y = e.clientY;
-                return this.cursor.matrixTransform(this.svg.getScreenCTM().inverse());
-            }
-            
-            startGameLoop() {
-                // Ambient animations
-                gsap.to("#target", {
-                    duration: 4,
-                    y: "+=10",
-                    repeat: -1,
-                    yoyo: true,
-                    ease: "sine.inOut"
-                });
-                
-                gsap.to("#clouds", {
-                    duration: 20,
-                    x: 100,
-                    repeat: -1,
-                    yoyo: true,
-                    ease: "none"
-                });
-                
-                // Breathing effect for UI elements
-                gsap.to(".score-panel", {
-                    duration: 3,
-                    boxShadow: "0 0 40px rgba(0, 255, 127, 0.5)",
-                    repeat: -1,
-                    yoyo: true,
-                    ease: "sine.inOut"
-                });
-                
-                gsap.to(".wind-indicator", {
-                    duration: 2.5,
-                    boxShadow: "0 0 35px rgba(255, 69, 0, 0.5)",
-                    repeat: -1,
-                    yoyo: true,
-                    ease: "sine.inOut"
-                });
-            }
-        }
-        
-        // Initialize game when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new AdvancedArcheryGame();
+      var svg = document.querySelector("svg");
+      var cursor = svg.createSVGPoint();
+      var arrows = document.querySelector(".arrows");
+      var randomAngle = 0;
+
+      // center of target
+      var target = {
+        x: 900,
+        y: 249.5
+      };
+
+      // target intersection line segment
+      var lineSegment = {
+        x1: 875,
+        y1: 280,
+        x2: 925,
+        y2: 220
+      };
+
+      // bow rotation point
+      var pivot = {
+        x: 100,
+        y: 250
+      };
+      aim({
+        clientX: 320,
+        clientY: 300
+      });
+
+      // set up start drag event
+      window.addEventListener("mousedown", draw);
+
+      function draw(e) {
+        // pull back arrow
+        randomAngle = (Math.random() * Math.PI * 0.03) - 0.015;
+        TweenMax.to(".arrow-angle use", 0.3, {
+          opacity: 1
         });
-        
-        // Prevent context menu on right click for mobile
-        document.addEventListener('contextmenu', e => e.preventDefault());
+        window.addEventListener("mousemove", aim);
+        window.addEventListener("mouseup", loose);
+        aim(e);
+      }
+
+      function aim(e) {
+        // get mouse position in relation to svg position and scale
+        var point = getMouseSVG(e);
+        point.x = Math.min(point.x, pivot.x - 7);
+        point.y = Math.max(point.y, pivot.y + 7);
+        var dx = point.x - pivot.x;
+        var dy = point.y - pivot.y;
+        // Make it more difficult by adding random angle each time
+        var angle = Math.atan2(dy, dx) + randomAngle;
+        var bowAngle = angle - Math.PI;
+        var distance = Math.min(Math.sqrt((dx * dx) + (dy * dy)), 50);
+        var scale = Math.min(Math.max(distance / 30, 1), 2);
+        TweenMax.to("#bow", 0.3, {
+          scaleX: scale,
+          rotation: bowAngle + "rad",
+          transformOrigin: "right center"
+        });
+        var arrowX = Math.min(pivot.x - ((1 / scale) * distance), 88);
+        TweenMax.to(".arrow-angle", 0.3, {
+          rotation: bowAngle + "rad",
+          svgOrigin: "100 250"
+        });
+        TweenMax.to(".arrow-angle use", 0.3, {
+          x: -distance
+        });
+        TweenMax.to("#bow polyline", 0.3, {
+          attr: {
+            points: "88,200 " + Math.min(pivot.x - ((1 / scale) * distance), 88) + ",250 88,300"
+          }
+        });
+
+        var radius = distance * 9;
+        var offset = {
+          x: (Math.cos(bowAngle) * radius),
+          y: (Math.sin(bowAngle) * radius)
+        };
+        var arcWidth = offset.x * 3;
+
+        TweenMax.to("#arc", 0.3, {
+          attr: {
+            d: "M100,250c" + offset.x + "," + offset.y + "," + (arcWidth - offset.x) + "," + (offset.y + 50) + "," + arcWidth + ",50"
+          },
+            autoAlpha: distance/60
+        });
+      }
+
+      function loose() {
+        // release arrow
+        window.removeEventListener("mousemove", aim);
+        window.removeEventListener("mouseup", loose);
+
+        TweenMax.to("#bow", 0.4, {
+          scaleX: 1,
+          transformOrigin: "right center",
+          ease: Elastic.easeOut
+        });
+        TweenMax.to("#bow polyline", 0.4, {
+          attr: {
+            points: "88,200 88,250 88,300"
+          },
+          ease: Elastic.easeOut
+        });
+        // duplicate arrow
+        var newArrow = document.createElementNS("http://www.w3.org/2000/svg", "use");
+        newArrow.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "#arrow");
+        arrows.appendChild(newArrow);
+
+        // animate arrow along path
+        var path = MorphSVGPlugin.pathDataToBezier("#arc");
+        TweenMax.to([newArrow], 0.5, {
+          force3D: true,
+          bezier: {
+            type: "cubic",
+            values: path,
+            autoRotate: ["x", "y", "rotation"]
+          },
+          onUpdate: hitTest,
+          onUpdateParams: ["{self}"],
+          onComplete: onMiss,
+          ease: Linear.easeNone
+        });
+        TweenMax.to("#arc", 0.3, {
+          opacity: 0
+        });
+        //hide previous arrow
+        TweenMax.set(".arrow-angle use", {
+          opacity: 0
+        });
+      }
+
+      function hitTest(tween) {
+        // check for collisions with arrow and target
+        var arrow = tween.target[0];
+        var transform = arrow._gsTransform;
+        var radians = transform.rotation * Math.PI / 180;
+        var arrowSegment = {
+          x1: transform.x,
+          y1: transform.y,
+          x2: (Math.cos(radians) * 60) + transform.x,
+          y2: (Math.sin(radians) * 60) + transform.y
+        }
+
+        var intersection = getIntersection(arrowSegment, lineSegment);
+        if (intersection.segment1 && intersection.segment2) {
+          tween.pause();
+          var dx = intersection.x - target.x;
+          var dy = intersection.y - target.y;
+          var distance = Math.sqrt((dx * dx) + (dy * dy));
+          var selector = ".hit";
+          if (distance < 7) {
+            selector = ".bullseye"
+          }
+          showMessage(selector);
+        }
+      }
+
+      function onMiss() {
+        // Damn!
+        showMessage(".miss");
+      }
+
+      function showMessage(selector) {
+        // handle all text animations by providing selector
+        TweenMax.killTweensOf(selector);
+        TweenMax.killChildTweensOf(selector);
+        TweenMax.set(selector, {
+          autoAlpha: 1
+        });
+        TweenMax.staggerFromTo(selector + " path", .5, {
+          rotation: -5,
+          scale: 0,
+          transformOrigin: "center"
+        }, {
+          scale: 1,
+          ease: Back.easeOut
+        }, .05);
+        TweenMax.staggerTo(selector + " path", .3, {
+          delay: 2,
+          rotation: 20,
+          scale: 0,
+          ease: Back.easeIn
+        }, .03);
+      }
+
+      function getMouseSVG(e) {
+        // normalize mouse position within svg coordinates
+        cursor.x = e.clientX;
+        cursor.y = e.clientY;
+        return cursor.matrixTransform(svg.getScreenCTM().inverse());
+      }
+
+      function getIntersection(segment1, segment2) {
+        // find intersection point of two line segments and whether or not the point is on either line segment
+        var dx1 = segment1.x2 - segment1.x1;
+        var dy1 = segment1.y2 - segment1.y1;
+        var dx2 = segment2.x2 - segment2.x1;
+        var dy2 = segment2.y2 - segment2.y1;
+        var cx = segment1.x1 - segment2.x1;
+        var cy = segment1.y1 - segment2.y1;
+        var denominator = dy2 * dx1 - dx2 * dy1;
+        if (denominator == 0) {
+          return null;
+        }
+        var ua = (dx2 * cy - dy2 * cx) / denominator;
+        var ub = (dx1 * cy - dy1 * cx) / denominator;
+        return {
+          x: segment1.x1 + ua * dx1,
+          y: segment1.y1 + ua * dy1,
+          segment1: ua >= 0 && ua <= 1,
+          segment2: ub >= 0 && ub <= 1
+        };
+      }
     </script>
-</body>
+  </body>
 </html>
