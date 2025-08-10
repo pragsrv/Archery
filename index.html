@@ -1,58 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Archery Game</title>
+    <title>Archery Game - Multi Theme</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <style>
-      body{
-        background:#222;
-        margin:20px;
+      body {
+        background: #222;
+        margin: 20px;
+        transition: all 0.3s ease;
       }
-      svg{
-        width:100%;
-        height:100%;
-        position:fixed;
-        top:0;
-        left:0;
+      svg {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transition: all 0.3s ease;
       }
-      span{
-        color:white;
-        font-family:sans-serif;
-        opacity:.3;
+      span {
+        color: white;
+        font-family: sans-serif;
+        opacity: .3;
+        position: relative;
+        z-index: 10;
+      }
+      
+      /* Theme Toggle Button */
+      .theme-toggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: sans-serif;
+        font-size: 12px;
+        transition: all 0.3s ease;
+      }
+      
+      .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      /* Simple Theme (Default) */
+      .simple {
+        background: #222;
+      }
+      .simple svg {
+        filter: none;
+      }
+      .simple .theme-toggle {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: white;
+      }
+
+      /* Minimal Theme */
+      .minimal {
+        background: #f8f9fa;
+      }
+      .minimal span {
+        color: #6c757d;
+      }
+      .minimal .theme-toggle {
+        background: rgba(0, 0, 0, 0.05);
+        border-color: rgba(0, 0, 0, 0.2);
+        color: #495057;
+      }
+      .minimal svg #bow polyline {
+        stroke: #6c757d !important;
+      }
+      .minimal svg #bow path {
+        stroke: #495057 !important;
+      }
+      .minimal svg #arc {
+        stroke: rgba(108, 117, 125, 0.3) !important;
+      }
+
+      /* Retro Theme */
+      .retro {
+        background: #2d1b00;
+        background-image: 
+          radial-gradient(circle at 25% 25%, #4a2c00 0%, transparent 50%),
+          radial-gradient(circle at 75% 75%, #1a0e00 0%, transparent 50%);
+      }
+      .retro span {
+        color: #ff8c00;
+        text-shadow: 0 0 10px #ff8c00;
+      }
+      .retro .theme-toggle {
+        background: rgba(255, 140, 0, 0.1);
+        border-color: #ff8c00;
+        color: #ff8c00;
+        box-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+      }
+      .retro svg {
+        filter: sepia(0.8) contrast(1.2) brightness(0.9);
+      }
+
+      /* Neon Theme */
+      .neon {
+        background: #0a0a0a;
+        background-image: 
+          linear-gradient(45deg, #0a0a0a 25%, transparent 25%),
+          linear-gradient(-45deg, #0a0a0a 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, #0a0a0a 75%),
+          linear-gradient(-45deg, transparent 75%, #0a0a0a 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      }
+      .neon span {
+        color: #00ffff;
+        text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+        animation: neonPulse 2s ease-in-out infinite alternate;
+      }
+      .neon .theme-toggle {
+        background: rgba(0, 255, 255, 0.1);
+        border-color: #00ffff;
+        color: #00ffff;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        text-shadow: 0 0 5px #00ffff;
+      }
+      .neon svg {
+        filter: drop-shadow(0 0 5px #00ffff) brightness(1.2) contrast(1.3);
+      }
+
+      @keyframes neonPulse {
+        from {
+          text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+        }
+        to {
+          text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 15px #00ffff;
+        }
       }
     </style>
+
+    <link rel="icon" href="https://i.ibb.co/M6KTWnf/pic.jpg">
   </head>
-  <body>
+  <body class="simple">
+    <button class="theme-toggle" onclick="toggleTheme()">Theme: Simple</button>
+    
     <svg id="game" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" overflow="visible">
-      <linearGradient id="ArcGradient" >
-          <stop offset="0"  stop-color="#fff" stop-opacity=".2"/>
+      <!-- Gradients for different themes -->
+      <defs>
+        <linearGradient id="ArcGradient">
+          <stop offset="0" stop-color="#fff" stop-opacity=".2"/>
           <stop offset="50%" stop-color="#fff" stop-opacity="0"/>
-      </linearGradient>
-        <path id="arc" fill="none" stroke="url(#ArcGradient)" stroke-width="4" d="M100,250c250-400,550-400,800,0"  pointer-events="none"/>
-        <defs>
-            <g id="arrow">
-                <line x2="60" fill="none" stroke="#888" stroke-width="2" />
-                <polygon fill="#888" points="64 0 58 2 56 0 58 -2" />
-                <polygon fill="#88ce02" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
-            </g>
-        </defs>
-        <g id="target">
-            <path fill="#FFF" d="M924.2,274.2c-21.5,21.5-45.9,19.9-52,3.2c-4.4-12.1,2.4-29.2,14.2-41c11.8-11.8,29-18.6,41-14.2 C944.1,228.3,945.7,252.8,924.2,274.2z" />
-            <path fill="#F4531C" d="M915.8,265.8c-14.1,14.1-30.8,14.6-36,4.1c-4.1-8.3,0.5-21.3,9.7-30.5s22.2-13.8,30.5-9.7 C930.4,235,929.9,251.7,915.8,265.8z" />
-            <path fill="#FFF" d="M908.9,258.9c-8,8-17.9,9.2-21.6,3.5c-3.2-4.9-0.5-13.4,5.6-19.5c6.1-6.1,14.6-8.8,19.5-5.6 C918.1,241,916.9,250.9,908.9,258.9z" />
-            <path fill="#F4531C" d="M903.2,253.2c-2.9,2.9-6.7,3.6-8.3,1.7c-1.5-1.8-0.6-5.4,2-8c2.6-2.6,6.2-3.6,8-2 C906.8,246.5,906.1,250.2,903.2,253.2z" />
+        </linearGradient>
+        <linearGradient id="ArcGradientMinimal">
+          <stop offset="0" stop-color="#6c757d" stop-opacity=".3"/>
+          <stop offset="50%" stop-color="#6c757d" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="ArcGradientRetro">
+          <stop offset="0" stop-color="#ff8c00" stop-opacity=".4"/>
+          <stop offset="50%" stop-color="#ff8c00" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="ArcGradientNeon">
+          <stop offset="0" stop-color="#00ffff" stop-opacity=".6"/>
+          <stop offset="50%" stop-color="#00ffff" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      
+      <path id="arc" fill="none" stroke="url(#ArcGradient)" stroke-width="4" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
+      
+      <defs>
+        <g id="arrow">
+          <line x2="60" fill="none" stroke="#888" stroke-width="2" />
+          <polygon fill="#888" points="64 0 58 2 56 0 58 -2" />
+          <polygon fill="#88ce02" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0" />
         </g>
-        <g id="bow" fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke" pointer-events="none">
-          <polyline fill="none" stroke="#ddd" stroke-linecap="round" points="88,200 88,250 88,300"/>
-          <path fill="none" stroke="#88ce02" stroke-width="3" stroke-linecap="round" d="M88,300 c0-10.1,12-25.1,12-50s-12-39.9-12-50"/>
-        </g>
+      </defs>
+      
+      <g id="target">
+        <path fill="#FFF" d="M924.2,274.2c-21.5,21.5-45.9,19.9-52,3.2c-4.4-12.1,2.4-29.2,14.2-41c11.8-11.8,29-18.6,41-14.2 C944.1,228.3,945.7,252.8,924.2,274.2z" />
+        <path fill="#F4531C" d="M915.8,265.8c-14.1,14.1-30.8,14.6-36,4.1c-4.1-8.3,0.5-21.3,9.7-30.5s22.2-13.8,30.5-9.7 C930.4,235,929.9,251.7,915.8,265.8z" />
+        <path fill="#FFF" d="M908.9,258.9c-8,8-17.9,9.2-21.6,3.5c-3.2-4.9-0.5-13.4,5.6-19.5c6.1-6.1,14.6-8.8,19.5-5.6 C918.1,241,916.9,250.9,908.9,258.9z" />
+        <path fill="#F4531C" d="M903.2,253.2c-2.9,2.9-6.7,3.6-8.3,1.7c-1.5-1.8-0.6-5.4,2-8c2.6-2.6,6.2-3.6,8-2 C906.8,246.5,906.1,250.2,903.2,253.2z" />
+      </g>
+      
+      <g id="bow" fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke" pointer-events="none">
+        <polyline fill="none" stroke="#ddd" stroke-linecap="round" points="88,200 88,250 88,300"/>
+        <path fill="none" stroke="#88ce02" stroke-width="3" stroke-linecap="round" d="M88,300 c0-10.1,12-25.1,12-50s-12-39.9-12-50"/>
+      </g>
+      
       <g class="arrow-angle"><use x="100" y="250" xlink:href="#arrow"/></g>
+      
       <clipPath id="mask">
         <polygon opacity=".5" points="0,0 1500,0 1500,200 970,290 950,240 925,220 875,280 890,295 920,310 0,350" pointer-events="none"/>
       </clipPath>
-      <g class="arrows" clip-path="url(#mask)"  pointer-events="none">
-      </g>
+      
+      <g class="arrows" clip-path="url(#mask)" pointer-events="none"></g>
+      
       <g class="miss" fill="#aaa" opacity="0" transform="translate(0, 100)">
         <path d="M358 194L363 118 386 120 400 153 416 121 440 119 446 203 419 212 416 163 401 180 380 160 381 204"/>
         <path d="M450 120L458 200 475 192 474 121"/>
@@ -60,6 +203,7 @@
         <path d="M540 202L543 178 570 186 569 168 544 167 546 122 590 116 586 142 561 140 560 152 586 153 586 205"/>
         <path d="M595,215l5-23l31,0l-5,29L595,215z M627,176l13-70l-41-0l-0,70L627,176z"/>
       </g>
+      
       <g class="bullseye" fill="#F4531C" opacity="0">
         <path d="M322,159l15-21l-27-13l-32,13l15,71l41-14l7-32L322,159z M292,142h20l3,8l-16,8 L292,142z M321,182l-18,9l-4-18l23-2V182z"/>
         <path d="M340 131L359 125 362 169 381 167 386 123 405 129 392 183 351 186z"/>
@@ -71,7 +215,8 @@
         <path d="M635 122L599 198 643 207 649 188 624 188 630 170 639 178 645 162 637 158 649 143 662 151 670 134z"/>
         <path d="M649,220l4-21l28,4l-6,25L649,220z M681,191l40-79l-35-8L659,184L681,191z"/>
       </g>
-      <g class="hit" fill="#ffcc00" opacity="0" transform="translate(180, -80) rotate(12) ">
+      
+      <g class="hit" fill="#ffcc00" opacity="0" transform="translate(180, -80) rotate(12)">
         <path d="M383 114L385 195 407 191 406 160 422 155 418 191 436 189 444 112 423 119 422 141 407 146 400 113"/>
         <path d="M449 185L453 113 477 112 464 186"/>
         <path d="M486 113L484 130 506 130 481 188 506 187 520 131 540 135 545 119"/>
@@ -80,9 +225,44 @@
     </svg>
 
     <span>Draw back an arrow and launch it!</span>
+    
     <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js'></script>
     <script src='//s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MorphSVGPlugin.min.js'></script>
     <script>
+      // Theme management
+      const themes = ['simple', 'minimal', 'retro', 'neon'];
+      let currentThemeIndex = 0;
+      
+      function toggleTheme() {
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+        const newTheme = themes[currentThemeIndex];
+        
+        // Remove all theme classes
+        document.body.className = '';
+        // Add new theme class
+        document.body.classList.add(newTheme);
+        
+        // Update button text
+        document.querySelector('.theme-toggle').textContent = `Theme: ${newTheme.charAt(0).toUpperCase() + newTheme.slice(1)}`;
+        
+        // Update arc gradient based on theme
+        const arc = document.querySelector('#arc');
+        switch(newTheme) {
+          case 'minimal':
+            arc.setAttribute('stroke', 'url(#ArcGradientMinimal)');
+            break;
+          case 'retro':
+            arc.setAttribute('stroke', 'url(#ArcGradientRetro)');
+            break;
+          case 'neon':
+            arc.setAttribute('stroke', 'url(#ArcGradientNeon)');
+            break;
+          default:
+            arc.setAttribute('stroke', 'url(#ArcGradient)');
+        }
+      }
+
+      // Original game code
       var svg = document.querySelector("svg");
       var cursor = svg.createSVGPoint();
       var arrows = document.querySelector(".arrows");
