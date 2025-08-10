@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Archery Game - EXTREME Trajectory Effects</title>
+    <title>Archery Game - EXTREME Bow Graphics + Audio</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <style>
@@ -56,143 +56,265 @@
         opacity: 0.6;
       }
       
-      /* Customization Panel */
-      .customization-panel {
+
+      /* ULTRA-MODERN THEME PANEL - TOP LEFT HORIZONTAL LAYOUT */
+.customization-panel {
+  position: fixed;
+  top: 20px;
+  left: 20px;                      /* Changed from right: 20px */
+  background: linear-gradient(145deg, rgba(13, 20, 35, 0.95), rgba(25, 32, 45, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: 16px 24px;              /* Adjusted padding for horizontal layout */
+  font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #ffffff;
+  min-width: 480px;                /* Much wider */
+  max-width: 600px;                /* Maximum horizontal width */
+  width: auto;                     /* Allow natural width */
+  height: auto;                    /* Allow natural height */
+  z-index: 1000;
+  backdrop-filter: blur(25px) saturate(180%);
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top left;      /* Changed from top right */
+  
+  /* Modern glass morphism effect */
+  background-attachment: fixed;
+  
+  /* Subtle animation on hover */
+  animation: panelGlow 6s ease-in-out infinite alternate;
+}
+
+/* HORIZONTAL PANEL HEADER */
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;             /* Reduced for horizontal layout */
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+
+/* HORIZONTAL OPTION GROUPS LAYOUT */
+.panel-content {
+  display: flex;                   /* Make content horizontal */
+  flex-direction: row;             /* Arrange groups horizontally */
+  gap: 32px;                       /* Space between groups */
+  align-items: flex-start;         /* Align groups to top */
+  flex-wrap: wrap;                 /* Allow wrapping on smaller screens */
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.option-group {
+  margin-bottom: 0;                /* Remove bottom margin */
+  position: relative;
+  flex: 1;                         /* Equal width distribution */
+  min-width: 140px;                /* Minimum width per group */
+}
+
+.option-group::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -12px;
+  right: 0;
+  height: 2px;                     /* Horizontal line instead of vertical */
+  background: linear-gradient(90deg, #88ce02, #00ff88);
+  border-radius: 1px;
+  opacity: 0.3;
+}
+
+/* MODERN OPTION LABELS - HORIZONTAL */
+.option-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  text-align: center;              /* Center align for horizontal layout */
+  justify-content: center;         /* Center the label */
+}
+
+.option-label::after {
+  display: none;                   /* Remove the line for horizontal layout */
+}
+
+/* HORIZONTAL OPTION BUTTONS */
+.option-buttons {
+  display: flex;
+  gap: 6px;                        /* Smaller gap for horizontal layout */
+  flex-wrap: wrap;
+  justify-content: center;         /* Center buttons in each group */
+}
+
+.option-btn {
+  padding: 8px 12px;               /* Smaller padding for compact horizontal layout */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  border-radius: 12px;
+  font-size: 10px;                 /* Slightly smaller font for horizontal layout */
+  font-weight: 600;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;             /* Prevent text wrapping */
+  
+  /* Modern typography */
+  font-family: inherit;
+  line-height: 1.2;
+}
+
+/* SETTINGS BUTTON POSITION (TOP LEFT) */
+.open-btn {
+  position: fixed;
+  top: 25px;
+  left: 25px;                      /* Changed from right: 25px */
+  background: linear-gradient(135deg, #88ce02, #00ff88);
+  border: none;
+  border-radius: 18px;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #0a0f1a;
+  font-weight: 700;
+  box-shadow: 
+    0 12px 30px rgba(136, 206, 2, 0.4),
+    0 0 0 1px rgba(136, 206, 2, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1001;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* PANEL ANIMATION STATES - LEFT SIDE */
+.panel-closed {
+  transform: scale(0.95) translateX(-100px);  /* Slide left instead of right */
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* AUDIO INDICATOR POSITION - ADJUSTED FOR LEFT PANEL */
+.audio-indicator {
+  position: fixed;
+  top: 85px;
+  left: 25px;                      /* Changed from right: 25px */
+  background: linear-gradient(135deg, rgba(136, 206, 2, 0.1), rgba(0, 255, 136, 0.1));
+  padding: 12px 18px;
+  border-radius: 16px;
+  font-family: inherit;
+  color: #88ce02;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 999;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(136, 206, 2, 0.2);
+  box-shadow: 0 8px 25px rgba(136, 206, 2, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* RESPONSIVE DESIGN FOR HORIZONTAL LAYOUT */
+@media (max-width: 768px) {
+  .customization-panel {
+    min-width: 320px;              /* Adjust for mobile */
+    max-width: 90vw;               /* Use viewport width */
+    padding: 12px 16px;
+    top: 15px;
+    left: 15px;
+  }
+  
+  .panel-content {
+    flex-direction: column;        /* Stack vertically on mobile */
+    gap: 16px;
+  }
+  
+  .option-group {
+    min-width: auto;
+  }
+  
+  .option-btn {
+    padding: 6px 10px;
+    font-size: 9px;
+  }
+  
+  .open-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 16px;
+    top: 20px;
+    left: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .customization-panel {
+    min-width: 280px;
+    flex-direction: column;
+  }
+  
+  .panel-content {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* VERY WIDE SCREENS - EXPAND HORIZONTALLY */
+@media (min-width: 1400px) {
+  .customization-panel {
+    min-width: 550px;
+    max-width: 700px;
+  }
+  
+  .panel-content {
+    gap: 40px;
+  }
+}
+
+      
+      /* Audio Control Indicator */
+      .audio-indicator {
         position: fixed;
-        top: 20px;
-        right: 20px;
-        background: rgba(10, 15, 25, 0.95);
-        border: 3px solid;
-        border-image: linear-gradient(45deg, #88ce02, #00ff88, #88ce02) 1;
-        border-radius: 20px;
-        padding: 25px;
-        font-family: 'Orbitron', sans-serif;
-        color: white;
-        min-width: 250px;
-        z-index: 1000;
-        backdrop-filter: blur(15px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1);
-      }
-      
-      .panel-title {
-        text-align: center;
-        background: linear-gradient(45deg, #88ce02, #00ff88);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-weight: bold;
-        margin-bottom: 20px;
-        font-size: 20px;
-        text-shadow: 0 0 20px rgba(136, 206, 2, 0.8);
-        letter-spacing: 2px;
-      }
-      
-      .option-group {
-        margin-bottom: 20px;
-      }
-      
-      .option-label {
-        display: block;
-        margin-bottom: 12px;
-        font-size: 14px;
-        color: #ddd;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-      }
-      
-      .option-buttons {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      
-      .option-btn {
+        top: 100px;
+        right: 30px;
+        background: rgba(136, 206, 2, 0.2);
         padding: 10px 15px;
-        border: 2px solid transparent;
-        background: linear-gradient(145deg, #2a3550, #1a2540);
-        color: white;
-        cursor: pointer;
-        border-radius: 12px;
+        border-radius: 20px;
+        font-family: 'Orbitron', sans-serif;
+        color: #88ce02;
         font-size: 12px;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        position: relative;
-        overflow: hidden;
-      }
-      
-      .option-btn::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-        transition: left 0.5s;
-      }
-      
-      .option-btn:hover {
-        background: linear-gradient(145deg, #3a4560, #2a3550);
-        border-color: #88ce02;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(136, 206, 2, 0.3);
-      }
-      
-      .option-btn:hover::before {
-        left: 100%;
-      }
-      
-      .option-btn.active {
-        background: linear-gradient(145deg, #88ce02, #00ff88);
-        border-color: #88ce02;
-        color: #222;
-        box-shadow: 0 0 30px rgba(136, 206, 2, 0.6);
-        animation: activeGlow 2s infinite alternate;
-      }
-      
-      @keyframes activeGlow {
-        from { box-shadow: 0 0 30px rgba(136, 206, 2, 0.6); }
-        to { box-shadow: 0 0 40px rgba(136, 206, 2, 0.8); }
-      }
-      
-      .toggle-btn {
-        position: absolute;
-        top: -12px;
-        right: -12px;
-        background: linear-gradient(45deg, #88ce02, #00ff88);
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        cursor: pointer;
-        font-size: 18px;
-        color: #222;
-        font-weight: bold;
-        box-shadow: 0 8px 20px rgba(136, 206, 2, 0.4);
-        transition: all 0.3s ease;
-        animation: pulseGlow 3s infinite;
-      }
-      
-      @keyframes pulseGlow {
-        0%, 100% { box-shadow: 0 8px 20px rgba(136, 206, 2, 0.4); }
-        50% { box-shadow: 0 8px 30px rgba(136, 206, 2, 0.8); }
-      }
-      
-      .toggle-btn:hover {
-        transform: scale(1.1) rotate(90deg);
-      }
-      
-      .panel-collapsed {
-        transform: translateX(calc(100% - 60px));
-      }
-      
-      .panel-collapsed .panel-content {
+        z-index: 999;
         opacity: 0;
-        pointer-events: none;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(136, 206, 2, 0.3);
       }
+      
+      .audio-indicator.show {
+        opacity: 1;
+      }
+      
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://i.ibb.co/M6KTWnf/pic.jpg">
   </head>
   <body>
     <!-- Multiple Canvas Layers for Complex Effects -->
@@ -200,12 +322,20 @@
     <canvas id="lightingCanvas"></canvas>
     <canvas id="particleCanvas"></canvas>
 
+    <!-- Audio Indicator -->
+    <div class="audio-indicator" id="audioIndicator">🔊 Audio Ready</div>
+
+    <!-- Open Button (appears when panel is closed) -->
+    <button class="open-btn" id="openBtn" onclick="openPanel()">⚙</button>
+
     <!-- Enhanced Customization Panel -->
     <div class="customization-panel" id="customPanel">
-      <button class="toggle-btn" onclick="togglePanel(event)">⚙</button>
+      <div class="panel-header">
+        <h3 class="panel-title">BOW EFFECTS 🔥</h3>
+        <button class="close-btn" onclick="closePanel()">×</button>
+      </div>
+      
       <div class="panel-content">
-        <div class="panel-title">🔥 EXTREME TRAJECTORY EFFECTS 🔥</div>
-        
         <div class="option-group">
           <span class="option-label">🏹 Arrow Effects:</span>
           <div class="option-buttons">
@@ -241,6 +371,82 @@
 
     <svg id="game" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" overflow="visible">
       <defs>
+        
+        <!-- Nature Bow Effects -->
+        <radialGradient id="natureBowGradient" cx="0.5" cy="0.5" r="1.2">
+          <stop offset="0%" stop-color="#88ce02" stop-opacity="1"/>
+          <stop offset="30%" stop-color="#66aa00" stop-opacity="0.8"/>
+          <stop offset="70%" stop-color="#44cc44" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#226600" stop-opacity="0"/>
+        </radialGradient>
+        
+        <radialGradient id="natureBowAura" cx="0.5" cy="0.5" r="2">
+          <stop offset="0%" stop-color="#88ce02" stop-opacity="0.4"/>
+          <stop offset="50%" stop-color="#66dd00" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#44aa00" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Phoenix Bow Effects -->
+        <radialGradient id="phoenixBowGradient" cx="0.5" cy="0.3" r="1.5">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+          <stop offset="20%" stop-color="#ffff99" stop-opacity="0.9"/>
+          <stop offset="40%" stop-color="#ff6b35" stop-opacity="0.8"/>
+          <stop offset="70%" stop-color="#cc3300" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#660000" stop-opacity="0"/>
+        </radialGradient>
+        
+        <radialGradient id="phoenixBowFlames" cx="0.5" cy="0.5" r="3">
+          <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.6"/>
+          <stop offset="30%" stop-color="#ff4400" stop-opacity="0.4"/>
+          <stop offset="60%" stop-color="#cc2200" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#880000" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Frost Bow Effects -->
+        <radialGradient id="frostBowGradient" cx="0.5" cy="0.3" r="1.3">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+          <stop offset="25%" stop-color="#e6f7ff" stop-opacity="0.9"/>
+          <stop offset="50%" stop-color="#4ecdc4" stop-opacity="0.8"/>
+          <stop offset="75%" stop-color="#2288cc" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#004488" stop-opacity="0"/>
+        </radialGradient>
+        
+        <radialGradient id="frostBowCrystals" cx="0.5" cy="0.5" r="2.5">
+          <stop offset="0%" stop-color="#4ecdc4" stop-opacity="0.5"/>
+          <stop offset="40%" stop-color="#66ccff" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#0066cc" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Thunder Bow Effects -->
+        <radialGradient id="thunderBowGradient" cx="0.5" cy="0.2" r="1.4">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+          <stop offset="15%" stop-color="#ffff99" stop-opacity="0.95"/>
+          <stop offset="35%" stop-color="#ffe66d" stop-opacity="0.8"/>
+          <stop offset="60%" stop-color="#ccaa00" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#666600" stop-opacity="0"/>
+        </radialGradient>
+        
+        <radialGradient id="thunderBowLightning" cx="0.5" cy="0.5" r="3">
+          <stop offset="0%" stop-color="#ffe66d" stop-opacity="0.7"/>
+          <stop offset="30%" stop-color="#ffcc00" stop-opacity="0.4"/>
+          <stop offset="70%" stop-color="#9999ff" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#3333cc" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Void Bow Effects -->
+        <radialGradient id="voidBowGradient" cx="0.5" cy="0.4" r="1.1">
+          <stop offset="0%" stop-color="#ff00ff" stop-opacity="0.9"/>
+          <stop offset="30%" stop-color="#ff0080" stop-opacity="0.8"/>
+          <stop offset="60%" stop-color="#cc0066" stop-opacity="0.6"/>
+          <stop offset="100%" stop-color="#440044" stop-opacity="0"/>
+        </radialGradient>
+        
+        <radialGradient id="voidBowDarkness" cx="0.5" cy="0.5" r="2.8">
+          <stop offset="0%" stop-color="#ff0080" stop-opacity="0.3"/>
+          <stop offset="50%" stop-color="#880044" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#220022" stop-opacity="0"/>
+        </radialGradient>
+
         <!-- EXTREME Trajectory Gradients for Each Arrow Type -->
         
         <!-- Fire Trajectory Effects -->
@@ -304,43 +510,6 @@
           <stop offset="100%" stop-color="#88ce02" stop-opacity="0"/>
         </radialGradient>
 
-        <!-- Advanced Gradients for Arrows -->
-        <radialGradient id="extremeFireCore" cx="0.5" cy="0.2" r="1.2">
-          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
-          <stop offset="10%" stop-color="#ffff99" stop-opacity="1"/>
-          <stop offset="25%" stop-color="#ffaa00" stop-opacity="0.95"/>
-          <stop offset="45%" stop-color="#ff6600" stop-opacity="0.9"/>
-          <stop offset="65%" stop-color="#cc3300" stop-opacity="0.7"/>
-          <stop offset="85%" stop-color="#660000" stop-opacity="0.4"/>
-          <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
-        </radialGradient>
-        
-        <radialGradient id="extremeIceCore" cx="0.5" cy="0.2" r="1.3">
-          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
-          <stop offset="15%" stop-color="#e6f3ff" stop-opacity="1"/>
-          <stop offset="35%" stop-color="#b3e0ff" stop-opacity="0.9"/>
-          <stop offset="55%" stop-color="#66ccff" stop-opacity="0.8"/>
-          <stop offset="75%" stop-color="#0099cc" stop-opacity="0.6"/>
-          <stop offset="100%" stop-color="#003366" stop-opacity="0"/>
-        </radialGradient>
-        
-        <radialGradient id="extremeGoldCore" cx="0.5" cy="0.2" r="1.1">
-          <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
-          <stop offset="12%" stop-color="#ffff99" stop-opacity="1"/>
-          <stop offset="30%" stop-color="#ffdd00" stop-opacity="0.95"/>
-          <stop offset="50%" stop-color="#ffaa00" stop-opacity="0.9"/>
-          <stop offset="70%" stop-color="#ff8800" stop-opacity="0.7"/>
-          <stop offset="100%" stop-color="#cc4400" stop-opacity="0"/>
-        </radialGradient>
-
-        <!-- Extreme Bow Effects -->
-        <radialGradient id="extremeBowEnergy" cx="0.5" cy="0.5" r="0.8">
-          <stop offset="0%" stop-color="#88ce02" stop-opacity="0.9"/>
-          <stop offset="30%" stop-color="#88ce02" stop-opacity="0.7"/>
-          <stop offset="60%" stop-color="#88ce02" stop-opacity="0.4"/>
-          <stop offset="100%" stop-color="#88ce02" stop-opacity="0"/>
-        </radialGradient>
-
         <!-- Ultra Target Effects -->
         <radialGradient id="extremeTargetGlow" cx="0.5" cy="0.5" r="1.2">
           <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
@@ -375,10 +544,6 @@
                 <animate attributeName="opacity" values="0.8;0.2;0;0.8" dur="0.2s" repeatCount="indefinite"/>
                 <animate attributeName="cy" values="1;3;-2;1" dur="0.2s" repeatCount="indefinite"/>
               </circle>
-              <circle cx="-16" cy="-1" r="2" fill="#ff6500" opacity="0.7">
-                <animate attributeName="opacity" values="0.7;0.1;0;0.7" dur="0.12s" repeatCount="indefinite"/>
-                <animate attributeName="cy" values="-1;-3;2;-1" dur="0.12s" repeatCount="indefinite"/>
-              </circle>
             </g>
         </g>
         
@@ -393,10 +558,6 @@
                 <animate attributeName="opacity" values="0.9;0.3;0;0.9" dur="0.6s" repeatCount="indefinite"/>
                 <animateTransform attributeName="transform" type="rotate" values="0;360" dur="1.5s" repeatCount="indefinite"/>
               </polygon>
-              <circle cx="-6" cy="0" r="2.5" fill="#b3e5fc" opacity="0.8">
-                <animate attributeName="opacity" values="0.8;0.2;0;0.8" dur="0.4s" repeatCount="indefinite"/>
-                <animate attributeName="r" values="2.5;4;0.5;2.5" dur="0.4s" repeatCount="indefinite"/>
-              </circle>
             </g>
         </g>
         
@@ -412,38 +573,16 @@
                 <animate attributeName="opacity" values="1;0;1" dur="0.3s" repeatCount="indefinite"/>
                 <animate attributeName="r" values="2;3;2" dur="0.3s" repeatCount="indefinite"/>
               </circle>
-              <circle cx="-6" cy="2" r="1.5" fill="#ffaa00" opacity="0.9">
-                <animate attributeName="opacity" values="0.9;0;0.9" dur="0.25s" repeatCount="indefinite"/>
-              </circle>
             </g>
         </g>
       </defs>
       
-      <!-- EXTREME Enhanced trajectory arcs with theme-based effects -->
+      <!-- EXTREME Enhanced trajectory arcs -->
       
       <!-- Default Arc -->
       <g id="trajectory-default">
         <path id="arc" fill="none" stroke="url(#defaultTrajectoryGradient)" stroke-width="6" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
         <path id="arcGlow" fill="none" stroke="url(#defaultTrajectoryGlow)" stroke-width="12" opacity="0.3" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
-        <!-- Particle trail dots -->
-        <g class="trajectory-particles" opacity="0.6">
-          <circle cx="200" cy="150" r="2" fill="#88ce02" opacity="0.8">
-            <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="350" cy="100" r="2" fill="#88ce02" opacity="0.6">
-            <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.5s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="500" cy="75" r="2" fill="#88ce02" opacity="0.7">
-            <animate attributeName="opacity" values="0.7;0.3;0.7" dur="1.8s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="650" cy="100" r="2" fill="#88ce02" opacity="0.5">
-            <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.2s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="800" cy="200" r="2" fill="#88ce02" opacity="0.8">
-            <animate attributeName="opacity" values="0.8;0.4;0.8" dur="1.5s" repeatCount="indefinite"/>
-          </circle>
-        </g>
       </g>
 
       <!-- Fire Arc -->
@@ -452,28 +591,6 @@
           <animate attributeName="stroke-opacity" values="0.6;1;0.6" dur="0.5s" repeatCount="indefinite"/>
         </path>
         <path id="arcGlow-fire" fill="none" stroke="url(#fireTrajectoryGlow)" stroke-width="20" opacity="0.4" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
-        <!-- Fire particles along trajectory -->
-        <g class="fire-trajectory-particles">
-          <circle cx="200" cy="150" r="3" fill="#ff4500" opacity="0.9">
-            <animate attributeName="opacity" values="0.9;0.3;0;0.9" dur="0.3s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="3;6;1;3" dur="0.3s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="350" cy="100" r="2.5" fill="#ffaa00" opacity="0.8">
-            <animate attributeName="opacity" values="0.8;0.2;0;0.8" dur="0.4s" repeatCount="indefinite"/>
-            <animate attributeName="cy" values="100;95;105;100" dur="0.4s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="500" cy="75" r="2" fill="#ff6500" opacity="0.7">
-            <animate attributeName="opacity" values="0.7;0.1;0;0.7" dur="0.25s" repeatCount="indefinite"/>
-            <animate attributeName="cy" values="75;70;80;75" dur="0.25s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="650" cy="100" r="3" fill="#cc3300" opacity="0.6">
-            <animate attributeName="opacity" values="0.6;0.2;0;0.6" dur="0.35s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="800" cy="200" r="4" fill="#ffffff" opacity="1">
-            <animate attributeName="opacity" values="1;0.5;0;1" dur="0.2s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="4;7;2;4" dur="0.2s" repeatCount="indefinite"/>
-          </circle>
-        </g>
       </g>
 
       <!-- Ice Arc -->
@@ -482,28 +599,6 @@
           <animate attributeName="stroke-dasharray" values="0,1000;20,980;0,1000" dur="2s" repeatCount="indefinite"/>
         </path>
         <path id="arcGlow-ice" fill="none" stroke="url(#iceTrajectoryGlow)" stroke-width="18" opacity="0.5" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
-        <!-- Ice crystals along trajectory -->
-        <g class="ice-trajectory-particles">
-          <polygon points="200,150 198,147 200,144 202,147" fill="#87ceeb" opacity="0.9">
-            <animate attributeName="opacity" values="0.9;0.4;0;0.9" dur="0.8s" repeatCount="indefinite"/>
-            <animateTransform attributeName="transform" type="rotate" values="0 200 150;360 200 150" dur="2s" repeatCount="indefinite"/>
-          </polygon>
-          <circle cx="350" cy="100" r="3" fill="#b3e5fc" opacity="0.8">
-            <animate attributeName="opacity" values="0.8;0.3;0;0.8" dur="0.6s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="3;5;1;3" dur="0.6s" repeatCount="indefinite"/>
-          </circle>
-          <polygon points="500,75 497,72 500,69 503,72" fill="#4682b4" opacity="0.7">
-            <animate attributeName="opacity" values="0.7;0.2;0;0.7" dur="0.7s" repeatCount="indefinite"/>
-            <animateTransform attributeName="transform" type="rotate" values="0 500 75;-360 500 75" dur="1.5s" repeatCount="indefinite"/>
-          </polygon>
-          <circle cx="650" cy="100" r="2.5" fill="#ffffff" opacity="1">
-            <animate attributeName="opacity" values="1;0.5;0;1" dur="0.5s" repeatCount="indefinite"/>
-          </circle>
-          <polygon points="800,200 796,196 800,192 804,196" fill="#1976d2" opacity="0.8">
-            <animate attributeName="opacity" values="0.8;0.3;0;0.8" dur="0.9s" repeatCount="indefinite"/>
-            <animateTransform attributeName="transform" type="rotate" values="0 800 200;360 800 200" dur="3s" repeatCount="indefinite"/>
-          </polygon>
-        </g>
       </g>
 
       <!-- Gold Arc -->
@@ -512,48 +607,6 @@
         <path id="arcGlow-gold" fill="none" stroke="url(#goldTrajectoryGlow)" stroke-width="22" opacity="0.6" d="M100,250c250-400,550-400,800,0" pointer-events="none">
           <animate attributeName="opacity" values="0.6;0.9;0.6" dur="1s" repeatCount="indefinite"/>
         </path>
-        <!-- Gold sparkles along trajectory -->
-        <g class="gold-trajectory-particles">
-          <circle cx="200" cy="150" r="2" fill="#ffd700" opacity="1">
-            <animate attributeName="opacity" values="1;0;1" dur="0.5s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="2;4;2" dur="0.5s" repeatCount="indefinite"/>
-          </circle>
-          <g transform="translate(350,100)">
-            <circle cx="0" cy="0" r="2" fill="#ffaa00" opacity="0.9">
-              <animate attributeName="opacity" values="0.9;0;0.9" dur="0.4s" repeatCount="indefinite"/>
-            </circle>
-            <line x1="-4" y1="0" x2="4" y2="0" stroke="#ffffff" stroke-width="1" opacity="0.8">
-              <animate attributeName="opacity" values="0.8;0.3;0.8" dur="0.4s" repeatCount="indefinite"/>
-            </line>
-            <line x1="0" y1="-4" x2="0" y2="4" stroke="#ffffff" stroke-width="1" opacity="0.8">
-              <animate attributeName="opacity" values="0.8;0.3;0.8" dur="0.4s" repeatCount="indefinite"/>
-            </line>
-          </g>
-          <circle cx="500" cy="75" r="1.5" fill="#ffa500" opacity="0.8">
-            <animate attributeName="opacity" values="0.8;0;0.8" dur="0.6s" repeatCount="indefinite"/>
-          </circle>
-          <g transform="translate(650,100)">
-            <circle cx="0" cy="0" r="3" fill="#ffd700" opacity="1">
-              <animate attributeName="opacity" values="1;0.4;1" dur="0.3s" repeatCount="indefinite"/>
-            </circle>
-            <line x1="-6" y1="0" x2="6" y2="0" stroke="#ffffff" stroke-width="1.5" opacity="0.9">
-              <animate attributeName="opacity" values="0.9;0.4;0.9" dur="0.3s" repeatCount="indefinite"/>
-            </line>
-            <line x1="0" y1="-6" x2="0" y2="6" stroke="#ffffff" stroke-width="1.5" opacity="0.9">
-              <animate attributeName="opacity" values="0.9;0.4;0.9" dur="0.3s" repeatCount="indefinite"/>
-            </line>
-            <line x1="-4" y1="-4" x2="4" y2="4" stroke="#ffffff" stroke-width="1" opacity="0.7">
-              <animate attributeName="opacity" values="0.7;0.2;0.7" dur="0.3s" repeatCount="indefinite"/>
-            </line>
-            <line x1="4" y1="-4" x2="-4" y2="4" stroke="#ffffff" stroke-width="1" opacity="0.7">
-              <animate attributeName="opacity" values="0.7;0.2;0.7" dur="0.3s" repeatCount="indefinite"/>
-            </line>
-          </g>
-          <circle cx="800" cy="200" r="3" fill="#ffffff" opacity="1">
-            <animate attributeName="opacity" values="1;0.5;1" dur="0.2s" repeatCount="indefinite"/>
-            <animate attributeName="r" values="3;5;3" dur="0.2s" repeatCount="indefinite"/>
-          </circle>
-        </g>
       </g>
         
       <!-- EXTREME Target Groups -->
@@ -615,20 +668,210 @@
           <circle cx="900" cy="249.5" r="5" fill="#D32F2F" />
       </g>
       
-      <!-- EXTREME Enhanced Bow -->
+      <!-- EXTREME ENHANCED BOW WITH DYNAMIC THEME EFFECTS -->
       <g id="bow" fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke" pointer-events="none">
+        
+        <!-- Base Bow Structure -->
         <polyline fill="none" stroke="#666" stroke-linecap="round" points="90,202 90,252 90,302" stroke-width="1" opacity="0.4"/>
         <polyline fill="none" stroke="#aaa" stroke-linecap="round" points="89,201 89,251 89,301" stroke-width="2" opacity="0.7"/>
         <polyline fill="none" stroke="#ddd" stroke-linecap="round" points="88,200 88,250 88,300" stroke-width="3"/>
         
+        <!-- Dynamic Bow String with Theme Color -->
         <path fill="none" stroke="#88ce02" stroke-width="4" stroke-linecap="round" d="M88,300 c0-10.1,12-25.1,12-50s-12-39.9-12-50" id="bowString" opacity="0.9"/>
         <path fill="none" stroke="#88ce02" stroke-width="2" stroke-linecap="round" d="M88,300 c0-10.1,12-25.1,12-50s-12-39.9-12-50" opacity="0.6"/>
         
-        <circle cx="100" cy="250" r="0" fill="url(#extremeBowEnergy)" opacity="0" id="bowEnergyField">
-          <animate attributeName="r" values="0;30;0" dur="0.4s" begin="indefinite"/>
+        <!-- NATURE BOW EFFECTS -->
+        <g id="bow-nature-effects" opacity="1">
+          <!-- Nature Aura -->
+          <circle cx="100" cy="250" r="25" fill="url(#natureBowAura)" opacity="0.4">
+            <animate attributeName="r" values="25;35;25" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.4;0.6;0.4" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          
+          <!-- Nature Leaves Effect -->
+          <g class="nature-leaves">
+            <ellipse cx="85" cy="220" rx="2" ry="4" fill="#88ce02" opacity="0.8">
+              <animateTransform attributeName="transform" type="rotate" values="0 85 220;360 85 220" dur="4s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+            </ellipse>
+            <ellipse cx="95" cy="280" rx="2" ry="4" fill="#66aa00" opacity="0.7">
+              <animateTransform attributeName="transform" type="rotate" values="360 95 280;0 95 280" dur="3.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.7;0.2;0.7" dur="2.5s" repeatCount="indefinite"/>
+            </ellipse>
+            <ellipse cx="110" cy="240" rx="1.5" ry="3" fill="#44cc44" opacity="0.6">
+              <animateTransform attributeName="transform" type="rotate" values="0 110 240;360 110 240" dur="5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3s" repeatCount="indefinite"/>
+            </ellipse>
+          </g>
+          
+          <!-- Nature Energy Lines -->
+          <g class="nature-energy" opacity="0.5">
+            <line x1="85" y1="210" x2="115" y2="250" stroke="#88ce02" stroke-width="1" opacity="0.6">
+              <animate attributeName="opacity" values="0.6;0.2;0.6" dur="1.5s" repeatCount="indefinite"/>
+            </line>
+            <line x1="85" y1="290" x2="115" y2="250" stroke="#66aa00" stroke-width="1" opacity="0.5">
+              <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1.8s" repeatCount="indefinite"/>
+            </line>
+          </g>
+        </g>
+
+        <!-- PHOENIX BOW EFFECTS -->
+        <g id="bow-phoenix-effects" opacity="0" style="display:none">
+          <!-- Phoenix Flames Aura -->
+          <circle cx="100" cy="250" r="30" fill="url(#phoenixBowFlames)" opacity="0.6">
+            <animate attributeName="r" values="30;45;30" dur="1.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0.9;0.6" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+          
+          <!-- Phoenix Fire Particles -->
+          <g class="phoenix-flames">
+            <circle cx="80" cy="230" r="3" fill="#ff6b35" opacity="0.9">
+              <animate attributeName="cy" values="230;220;230" dur="0.8s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.9;0.3;0.9" dur="0.8s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="3;5;3" dur="0.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="120" cy="270" r="2.5" fill="#ff4400" opacity="0.8">
+              <animate attributeName="cy" values="270;260;270" dur="1s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="90" cy="240" r="2" fill="#ffaa00" opacity="0.7">
+              <animate attributeName="cx" values="90;85;90" dur="1.2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.7;0.1;0.7" dur="1.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="110" cy="260" r="2.5" fill="#cc3300" opacity="0.8">
+              <animate attributeName="cx" values="110;115;110" dur="0.9s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;0.2;0.8" dur="0.9s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+          
+          <!-- Phoenix Wing Effects -->
+          <path d="M85,240 Q75,220 85,210 Q90,215 85,240" fill="#ff6b35" opacity="0.4">
+            <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/>
+            <animateTransform attributeName="transform" type="scale" values="1;1.2;1" dur="2s" repeatCount="indefinite"/>
+          </path>
+          <path d="M115,260 Q125,280 115,290 Q110,285 115,260" fill="#ff4400" opacity="0.4">
+            <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.2s" repeatCount="indefinite"/>
+            <animateTransform attributeName="transform" type="scale" values="1;1.2;1" dur="2.2s" repeatCount="indefinite"/>
+          </path>
+        </g>
+
+        <!-- FROST BOW EFFECTS -->
+        <g id="bow-frost-effects" opacity="0" style="display:none">
+          <!-- Frost Crystal Aura -->
+          <circle cx="100" cy="250" r="28" fill="url(#frostBowCrystals)" opacity="0.5">
+            <animate attributeName="r" values="28;38;28" dur="4s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.5;0.8;0.5" dur="4s" repeatCount="indefinite"/>
+          </circle>
+          
+          <!-- Ice Crystals -->
+          <g class="frost-crystals">
+            <polygon points="85,225 83,222 85,219 87,222" fill="#4ecdc4" opacity="0.9">
+              <animateTransform attributeName="transform" type="rotate" values="0 85 225;360 85 225" dur="6s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.9;0.4;0.9" dur="3s" repeatCount="indefinite"/>
+            </polygon>
+            <polygon points="115,275 112,272 115,269 118,272" fill="#66ccff" opacity="0.8">
+              <animateTransform attributeName="transform" type="rotate" values="360 115 275;0 115 275" dur="5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2.5s" repeatCount="indefinite"/>
+            </polygon>
+            <polygon points="95,235 93,233 95,231 97,233" fill="#87ceeb" opacity="0.7">
+              <animateTransform attributeName="transform" type="rotate" values="0 95 235;360 95 235" dur="7s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.7;0.2;0.7" dur="3.5s" repeatCount="indefinite"/>
+            </polygon>
+          </g>
+          
+          <!-- Frost Trails -->
+          <g class="frost-trails" opacity="0.6">
+            <path d="M80,250 Q90,240 100,250 Q110,260 120,250" fill="none" stroke="#4ecdc4" stroke-width="1.5" opacity="0.6">
+              <animate attributeName="stroke-dasharray" values="0,50;25,25;50,0;0,50" dur="3s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite"/>
+            </path>
+          </g>
+        </g>
+
+        <!-- THUNDER BOW EFFECTS -->
+        <g id="bow-thunder-effects" opacity="0" style="display:none">
+          <!-- Lightning Aura -->
+          <circle cx="100" cy="250" r="32" fill="url(#thunderBowLightning)" opacity="0.7">
+            <animate attributeName="r" values="32;42;32" dur="1s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite"/>
+          </circle>
+          
+          <!-- Lightning Bolts -->
+          <g class="thunder-lightning">
+            <path d="M85,220 L88,230 L85,235 L90,245 L85,250" fill="none" stroke="#ffe66d" stroke-width="2" opacity="0">
+              <animate attributeName="opacity" values="0;1;0" dur="0.1s" begin="0s;2s;4s" repeatCount="indefinite"/>
+            </path>
+            <path d="M115,280 L112,270 L115,265 L110,255 L115,250" fill="none" stroke="#ffcc00" stroke-width="2" opacity="0">
+              <animate attributeName="opacity" values="0;1;0" dur="0.1s" begin="1s;3s;5s" repeatCount="indefinite"/>
+            </path>
+            <path d="M90,240 L95,245 L100,240 L105,245 L110,240" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0">
+              <animate attributeName="opacity" values="0;1;0" dur="0.08s" begin="0.5s;2.5s;4.5s" repeatCount="indefinite"/>
+            </path>
+          </g>
+          
+          <!-- Electric Sparks -->
+          <g class="thunder-sparks">
+            <circle cx="88" cy="240" r="1" fill="#ffe66d" opacity="0">
+              <animate attributeName="opacity" values="0;1;0" dur="0.2s" begin="0.5s;3s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="1;3;1" dur="0.2s" begin="0.5s;3s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="112" cy="260" r="1" fill="#ffcc00" opacity="0">
+              <animate attributeName="opacity" values="0;1;0" dur="0.2s" begin="1.5s;4s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="1;3;1" dur="0.2s" begin="1.5s;4s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+        </g>
+
+        <!-- VOID BOW EFFECTS -->
+        <g id="bow-void-effects" opacity="0" style="display:none">
+          <!-- Void Darkness Aura -->
+          <circle cx="100" cy="250" r="35" fill="url(#voidBowDarkness)" opacity="0.6">
+            <animate attributeName="r" values="35;50;35" dur="2.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.5s" repeatCount="indefinite"/>
+          </circle>
+          
+          <!-- Dark Energy Swirls -->
+          <g class="void-swirls">
+            <path d="M80,250 Q90,230 100,250 Q110,270 120,250 Q110,230 100,250 Q90,270 80,250" 
+                  fill="none" stroke="#ff0080" stroke-width="2" opacity="0.8">
+              <animate attributeName="stroke-dasharray" values="0,100;50,50;100,0;0,100" dur="3s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/>
+            </path>
+          </g>
+          
+          <!-- Void Particles -->
+          <g class="void-particles">
+            <circle cx="85" cy="235" r="2" fill="#ff0080" opacity="0.9">
+              <animate attributeName="cx" values="85;95;85" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="cy" values="235;245;235" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.9;0.2;0.9" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="115" cy="265" r="1.5" fill="#cc0066" opacity="0.8">
+              <animate attributeName="cx" values="115;105;115" dur="1.8s" repeatCount="indefinite"/>
+              <animate attributeName="cy" values="265;255;265" dur="1.8s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;0.1;0.8" dur="1.8s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="100" cy="230" r="1" fill="#880044" opacity="0.7">
+              <animate attributeName="cy" values="230;270;230" dur="3s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.7;0.1;0.7" dur="3s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+          
+          <!-- Void Distortion Effect -->
+          <ellipse cx="100" cy="250" rx="20" ry="8" fill="none" stroke="#ff0080" stroke-width="1" opacity="0.4">
+            <animate attributeName="rx" values="20;30;20" dur="2s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/>
+            <animateTransform attributeName="transform" type="rotate" values="0 100 250;360 100 250" dur="4s" repeatCount="indefinite"/>
+          </ellipse>
+        </g>
+        
+        <!-- Bow Energy Field (Universal) -->
+        <circle cx="100" cy="250" r="0" fill="url(#natureBowGradient)" opacity="0" id="bowEnergyField">
+          <animate attributeName="r" values="0;40;0" dur="0.4s" begin="indefinite"/>
           <animate attributeName="opacity" values="0;0.8;0" dur="0.4s" begin="indefinite"/>
         </circle>
         
+        <!-- String Vibration Effects -->
         <g id="stringVibration" opacity="0">
           <circle cx="95" cy="225" r="1.5" fill="#88ce02" opacity="1">
             <animate attributeName="cy" values="225;223;225" dur="0.05s" repeatCount="20"/>
@@ -681,12 +924,416 @@
       </g>
     </svg>
 
-    <span>🔥 ULTIMATE: Dynamic trajectory effects that change per arrow type! Hyper-realistic graphics! ⚡❄️✨</span>
+    <span>🔥 Open Settings for theme edits 🏹⚡❄️✨</span>
     
     <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js'></script>
     <script src='//s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MorphSVGPlugin.min.js'></script>
     <script>
-      // Particle system (same as before but optimized)
+      // ====== CREATIVE LOCAL SOUND EFFECTS SYSTEM ======
+      class CreativeSoundEngine {
+        constructor() {
+          this.audioContext = null;
+          this.masterGain = null;
+          this.isInitialized = false;
+          this.activeOscillators = [];
+          this.reverbNode = null;
+          
+          this.initializeOnUserAction();
+        }
+
+        async initializeOnUserAction() {
+          document.addEventListener('click', async () => {
+            if (!this.isInitialized) {
+              await this.initialize();
+            }
+          }, { once: true });
+        }
+
+        async initialize() {
+          try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.masterGain = this.audioContext.createGain();
+            this.masterGain.connect(this.audioContext.destination);
+            this.masterGain.gain.value = 0.3;
+
+            this.createReverb();
+            this.isInitialized = true;
+            
+            this.showAudioIndicator("🔊 Audio Ready!");
+            console.log("Creative Sound Engine Initialized!");
+          } catch (error) {
+            console.warn("Audio initialization failed:", error);
+          }
+        }
+
+        createReverb() {
+          this.reverbNode = this.audioContext.createConvolver();
+          const length = this.audioContext.sampleRate * 2;
+          const impulse = this.audioContext.createBuffer(2, length, this.audioContext.sampleRate);
+          
+          for (let channel = 0; channel < 2; channel++) {
+            const channelData = impulse.getChannelData(channel);
+            for (let i = 0; i < length; i++) {
+              channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2);
+            }
+          }
+          
+          this.reverbNode.buffer = impulse;
+          this.reverbNode.connect(this.masterGain);
+        }
+
+        showAudioIndicator(text) {
+          const indicator = document.getElementById('audioIndicator');
+          indicator.textContent = text;
+          indicator.classList.add('show');
+          setTimeout(() => indicator.classList.remove('show'), 2000);
+        }
+
+        // BOW DRAWING SOUND
+        playBowDraw(tension = 0.5) {
+          if (!this.isInitialized) return;
+          
+          const osc = this.audioContext.createOscillator();
+          const gain = this.audioContext.createGain();
+          const filter = this.audioContext.createBiquadFilter();
+          
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(80 + (tension * 60), this.audioContext.currentTime);
+          
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(200 + (tension * 300), this.audioContext.currentTime);
+          filter.Q.value = 8;
+          
+          gain.gain.setValueAtTime(0, this.audioContext.currentTime);
+          gain.gain.linearRampToValueAtTime(tension * 0.2, this.audioContext.currentTime + 0.1);
+          
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.masterGain);
+          
+          osc.start();
+          
+          const harmonic = this.audioContext.createOscillator();
+          const harmonicGain = this.audioContext.createGain();
+          
+          harmonic.type = 'triangle';
+          harmonic.frequency.setValueAtTime(osc.frequency.value * 1.5, this.audioContext.currentTime);
+          harmonicGain.gain.setValueAtTime(tension * 0.1, this.audioContext.currentTime);
+          
+          harmonic.connect(harmonicGain);
+          harmonicGain.connect(this.masterGain);
+          harmonic.start();
+          
+          this.activeOscillators.push({ osc, gain, harmonic, harmonicGain });
+          
+          return { osc, gain, harmonic, harmonicGain };
+        }
+
+        // BOW RELEASE SOUND
+        playBowRelease(power = 1.0) {
+          if (!this.isInitialized) return;
+          
+          this.showAudioIndicator("🏹 RELEASE!");
+          this.stopBowDraw();
+          
+          const snap = this.audioContext.createOscillator();
+          const snapGain = this.audioContext.createGain();
+          const snapFilter = this.audioContext.createBiquadFilter();
+          
+          snap.type = 'square';
+          snap.frequency.setValueAtTime(220, this.audioContext.currentTime);
+          snap.frequency.exponentialRampToValueAtTime(80, this.audioContext.currentTime + 0.1);
+          
+          snapFilter.type = 'bandpass';
+          snapFilter.frequency.value = 300;
+          snapFilter.Q.value = 10;
+          
+          snapGain.gain.setValueAtTime(power * 0.4, this.audioContext.currentTime);
+          snapGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.15);
+          
+          snap.connect(snapFilter);
+          snapFilter.connect(snapGain);
+          snapGain.connect(this.masterGain);
+          
+          snap.start();
+          snap.stop(this.audioContext.currentTime + 0.15);
+          
+          setTimeout(() => this.playArrowWhoosh(power), 50);
+        }
+
+        stopBowDraw() {
+          this.activeOscillators.forEach(({ osc, gain, harmonic, harmonicGain }) => {
+            try {
+              gain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.1);
+              harmonicGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.1);
+              osc.stop(this.audioContext.currentTime + 0.1);
+              harmonic.stop(this.audioContext.currentTime + 0.1);
+            } catch (e) {}
+          });
+          this.activeOscillators = [];
+        }
+
+        playArrowWhoosh(intensity = 1.0) {
+          if (!this.isInitialized) return;
+          
+          const duration = 0.6;
+          const noise = this.audioContext.createBufferSource();
+          const noiseBuffer = this.audioContext.createBuffer(1, this.audioContext.sampleRate * duration, this.audioContext.sampleRate);
+          const noiseData = noiseBuffer.getChannelData(0);
+          
+          for (let i = 0; i < noiseData.length; i++) {
+            noiseData[i] = (Math.random() * 2 - 1) * 0.3;
+          }
+          
+          noise.buffer = noiseBuffer;
+          
+          const filter = this.audioContext.createBiquadFilter();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(1000, this.audioContext.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(300, this.audioContext.currentTime + duration);
+          filter.Q.value = 2;
+          
+          const gain = this.audioContext.createGain();
+          gain.gain.setValueAtTime(intensity * 0.3, this.audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + duration);
+          
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.masterGain);
+          
+          noise.start();
+          noise.stop(this.audioContext.currentTime + duration);
+        }
+
+        // FIRE ARROW EFFECTS
+        playFireArrowEffects() {
+          this.showAudioIndicator("🔥 FIRE ARROW!");
+          this.playArrowWhoosh(1.2);
+          
+          const crackle = this.audioContext.createBufferSource();
+          const crackleBuffer = this.audioContext.createBuffer(1, this.audioContext.sampleRate * 0.8, this.audioContext.sampleRate);
+          const crackleData = crackleBuffer.getChannelData(0);
+          
+          for (let i = 0; i < crackleData.length; i++) {
+            crackleData[i] = (Math.random() * 2 - 1) * Math.sin(i * 0.01) * 0.2;
+          }
+          
+          crackle.buffer = crackleBuffer;
+          
+          const crackleGain = this.audioContext.createGain();
+          crackleGain.gain.setValueAtTime(0.25, this.audioContext.currentTime);
+          crackleGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.8);
+          
+          const crackleFilter = this.audioContext.createBiquadFilter();
+          crackleFilter.type = 'highpass';
+          crackleFilter.frequency.value = 2000;
+          
+          crackle.connect(crackleFilter);
+          crackleFilter.connect(crackleGain);
+          crackleGain.connect(this.masterGain);
+          
+          crackle.start();
+          crackle.stop(this.audioContext.currentTime + 0.8);
+        }
+
+        // ICE ARROW EFFECTS
+        playIceArrowEffects() {
+          this.showAudioIndicator("❄️ ICE ARROW!");
+          this.playArrowWhoosh(0.9);
+          
+          const crystal = this.audioContext.createOscillator();
+          const crystalGain = this.audioContext.createGain();
+          const crystalFilter = this.audioContext.createBiquadFilter();
+          
+          crystal.type = 'sine';
+          crystal.frequency.setValueAtTime(800, this.audioContext.currentTime);
+          crystal.frequency.linearRampToValueAtTime(1200, this.audioContext.currentTime + 0.3);
+          crystal.frequency.linearRampToValueAtTime(600, this.audioContext.currentTime + 0.6);
+          
+          crystalFilter.type = 'bandpass';
+          crystalFilter.frequency.value = 1000;
+          crystalFilter.Q.value = 15;
+          
+          crystalGain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+          crystalGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.6);
+          
+          crystal.connect(crystalFilter);
+          crystalFilter.connect(crystalGain);
+          crystalGain.connect(this.reverbNode);
+          
+          crystal.start();
+          crystal.stop(this.audioContext.currentTime + 0.6);
+        }
+
+        // GOLD ARROW EFFECTS
+        playGoldArrowEffects() {
+          this.showAudioIndicator("✨ DIVINE ARROW!");
+          this.playArrowWhoosh(1.5);
+          
+          const frequencies = [523.25, 659.25, 783.99, 1046.50];
+          
+          frequencies.forEach((freq, index) => {
+            setTimeout(() => {
+              const chime = this.audioContext.createOscillator();
+              const chimeGain = this.audioContext.createGain();
+              
+              chime.type = 'sine';
+              chime.frequency.value = freq;
+              
+              chimeGain.gain.setValueAtTime(0, this.audioContext.currentTime);
+              chimeGain.gain.exponentialRampToValueAtTime(0.15, this.audioContext.currentTime + 0.05);
+              chimeGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 1.5);
+              
+              chime.connect(chimeGain);
+              chimeGain.connect(this.reverbNode);
+              
+              chime.start();
+              chime.stop(this.audioContext.currentTime + 1.5);
+            }, index * 100);
+          });
+        }
+
+        // TARGET HIT SOUNDS
+        playTargetHit(distance) {
+          if (!this.isInitialized) return;
+          
+          const isBullseye = distance < 7;
+          
+          if (isBullseye) {
+            this.showAudioIndicator("🎯 BULLSEYE!");
+            this.playBullseyeHit();
+          } else {
+            this.showAudioIndicator("🎯 HIT!");
+            this.playRegularHit();
+          }
+        }
+
+        playBullseyeHit() {
+          const impact = this.audioContext.createOscillator();
+          const impactGain = this.audioContext.createGain();
+          
+          impact.type = 'triangle';
+          impact.frequency.setValueAtTime(150, this.audioContext.currentTime);
+          impact.frequency.exponentialRampToValueAtTime(80, this.audioContext.currentTime + 0.3);
+          
+          impactGain.gain.setValueAtTime(0.4, this.audioContext.currentTime);
+          impactGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.3);
+          
+          impact.connect(impactGain);
+          impactGain.connect(this.masterGain);
+          
+          impact.start();
+          impact.stop(this.audioContext.currentTime + 0.3);
+          
+          setTimeout(() => {
+            const chord = [261.63, 329.63, 392.00];
+            chord.forEach((freq, index) => {
+              setTimeout(() => {
+                const note = this.audioContext.createOscillator();
+                const noteGain = this.audioContext.createGain();
+                
+                note.type = 'sine';
+                note.frequency.value = freq;
+                
+                noteGain.gain.setValueAtTime(0.15, this.audioContext.currentTime);
+                noteGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 2);
+                
+                note.connect(noteGain);
+                noteGain.connect(this.reverbNode);
+                
+                note.start();
+                note.stop(this.audioContext.currentTime + 2);
+              }, index * 50);
+            });
+          }, 200);
+        }
+
+        playRegularHit() {
+          const thunk = this.audioContext.createOscillator();
+          const thunkGain = this.audioContext.createGain();
+          const thunkFilter = this.audioContext.createBiquadFilter();
+          
+          thunk.type = 'sawtooth';
+          thunk.frequency.setValueAtTime(120, this.audioContext.currentTime);
+          thunk.frequency.exponentialRampToValueAtTime(60, this.audioContext.currentTime + 0.2);
+          
+          thunkFilter.type = 'lowpass';
+          thunkFilter.frequency.value = 400;
+          
+          thunkGain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+          thunkGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.2);
+          
+          thunk.connect(thunkFilter);
+          thunkFilter.connect(thunkGain);
+          thunkGain.connect(this.masterGain);
+          
+          thunk.start();
+          thunk.stop(this.audioContext.currentTime + 0.2);
+        }
+
+        playMissSound() {
+          this.showAudioIndicator("😞 MISS!");
+          
+          const trombone = this.audioContext.createOscillator();
+          const tromboneGain = this.audioContext.createGain();
+          
+          trombone.type = 'sawtooth';
+          trombone.frequency.setValueAtTime(220, this.audioContext.currentTime);
+          trombone.frequency.exponentialRampToValueAtTime(110, this.audioContext.currentTime + 1);
+          
+          tromboneGain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+          tromboneGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 1);
+          
+          trombone.connect(tromboneGain);
+          tromboneGain.connect(this.masterGain);
+          
+          trombone.start();
+          trombone.stop(this.audioContext.currentTime + 1);
+        }
+
+        playUIClick() {
+          if (!this.isInitialized) return;
+          
+          const click = this.audioContext.createOscillator();
+          const clickGain = this.audioContext.createGain();
+          
+          click.type = 'sine';
+          click.frequency.value = 800;
+          
+          clickGain.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+          clickGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.1);
+          
+          click.connect(clickGain);
+          clickGain.connect(this.masterGain);
+          
+          click.start();
+          click.stop(this.audioContext.currentTime + 0.1);
+        }
+
+        playUIHover() {
+          if (!this.isInitialized) return;
+          
+          const hover = this.audioContext.createOscillator();
+          const hoverGain = this.audioContext.createGain();
+          
+          hover.type = 'sine';
+          hover.frequency.value = 600;
+          
+          hoverGain.gain.setValueAtTime(0.05, this.audioContext.currentTime);
+          hoverGain.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.08);
+          
+          hover.connect(hoverGain);
+          hoverGain.connect(this.masterGain);
+          
+          hover.start();
+          hover.stop(this.audioContext.currentTime + 0.08);
+        }
+      }
+
+      // Initialize sound engine
+      const soundEngine = new CreativeSoundEngine();
+
+      // ====== PARTICLE SYSTEM ======
       class AAA_ParticleSystem {
         constructor() {
           this.particleCanvas = document.getElementById('particleCanvas');
@@ -765,7 +1412,7 @@
         }
       }
 
-      // Particle classes (same as before)
+      // Particle classes
       class FireParticle {
         constructor(x, y) {
           this.x = x;
@@ -978,10 +1625,10 @@
         }
       }
 
-      // Initialize Particle System
+      // Initialize Systems
       const aaaParticleSystem = new AAA_ParticleSystem();
 
-      // Game Variables
+      // ====== GAME VARIABLES ======
       var svg = document.querySelector("svg");
       var cursor = svg.createSVGPoint();
       var arrows = document.querySelector(".arrows");
@@ -989,6 +1636,9 @@
       var currentArrowStyle = 'default';
       var currentTargetStyle = 'classic';
       var currentBowColor = '#88ce02';
+      var currentBowTheme = 'nature'; // Track current bow theme
+      var currentBowDraw = null;
+      var isPanelOpen = true;
 
       var target = {
         x: 900,
@@ -1012,31 +1662,44 @@
         clientY: 300
       });
 
-      // ENHANCED: UI Functions with trajectory switching
-      function togglePanel(event) {
-        event.stopPropagation();
+      // ====== UI FUNCTIONS WITH SOUND + BOW THEME SWITCHING ======
+      function openPanel() {
         const panel = document.getElementById('customPanel');
-        panel.classList.toggle('panel-collapsed');
+        const openBtn = document.getElementById('openBtn');
+        
+        panel.classList.remove('panel-closed');
+        openBtn.style.display = 'none';
+        isPanelOpen = true;
+        
+        soundEngine.playUIClick();
+      }
+
+      function closePanel() {
+        const panel = document.getElementById('customPanel');
+        const openBtn = document.getElementById('openBtn');
+        
+        panel.classList.add('panel-closed');
+        openBtn.style.display = 'flex';
+        isPanelOpen = false;
+        
+        soundEngine.playUIClick();
       }
 
       function changeArrowStyle(style, event) {
         event.stopPropagation();
         currentArrowStyle = style;
         document.getElementById('currentArrow').setAttribute('href', '#arrow-' + style);
-        setActiveButton('.option-group:nth-child(2)', style);
-        
-        // EXTREME: Switch trajectory effects based on arrow style
+        setActiveButton('.option-group:nth-child(1)', style);
         switchTrajectoryEffects(style);
+        soundEngine.playUIClick();
       }
 
       function switchTrajectoryEffects(arrowStyle) {
-        // Hide all trajectory groups
         document.getElementById('trajectory-default').style.display = 'none';
         document.getElementById('trajectory-fire').style.display = 'none';
         document.getElementById('trajectory-ice').style.display = 'none';
         document.getElementById('trajectory-gold').style.display = 'none';
         
-        // Show the matching trajectory
         document.getElementById('trajectory-' + arrowStyle).style.display = 'block';
       }
 
@@ -1049,20 +1712,68 @@
         
         document.getElementById('target-' + style).style.display = 'block';
         currentTargetStyle = style;
-        setActiveButton('.option-group:nth-child(3)', style);
+        setActiveButton('.option-group:nth-child(2)', style);
+        soundEngine.playUIClick();
       }
 
+      // ENHANCED: Bow Color Change with Extreme Theme Effects
       function changeBowColor(color, event) {
         event.stopPropagation();
         currentBowColor = color;
+        
+        // Update bow string color
         document.getElementById('bowString').setAttribute('stroke', color);
-        const bowGradient = document.getElementById('extremeBowEnergy');
-        const stops = bowGradient.querySelectorAll('stop');
-        stops.forEach(stop => {
-          stop.setAttribute('stop-color', color);
-        });
-        setActiveButton('.option-group:nth-child(4)', color);
+        
+        // Update bow energy gradient color
+        const bowEnergyField = document.getElementById('bowEnergyField');
+        
+        // Determine theme based on color and switch bow effects
+        let theme = 'nature';
+        if (color === '#ff6b35') theme = 'phoenix';
+        else if (color === '#4ecdc4') theme = 'frost';
+        else if (color === '#ffe66d') theme = 'thunder';
+        else if (color === '#ff0080') theme = 'void';
+        
+        switchBowTheme(theme);
+        currentBowTheme = theme;
+        
+        setActiveButton('.option-group:nth-child(3)', color);
+        soundEngine.playUIClick();
       }
+
+      // NEW: Switch Bow Theme Effects
+      function switchBowTheme(theme) {
+        // Hide all bow effect groups
+        document.getElementById('bow-nature-effects').style.display = 'none';
+        document.getElementById('bow-phoenix-effects').style.display = 'none';
+        document.getElementById('bow-frost-effects').style.display = 'none';
+        document.getElementById('bow-thunder-effects').style.display = 'none';
+        document.getElementById('bow-void-effects').style.display = 'none';
+        
+        // Show the selected theme effects
+        const selectedTheme = document.getElementById('bow-' + theme + '-effects');
+        selectedTheme.style.display = 'block';
+        selectedTheme.style.opacity = '1';
+        
+        // Update the bow energy field gradient based on theme
+        const bowEnergyField = document.getElementById('bowEnergyField');
+        const gradientId = theme + 'BowGradient';
+        bowEnergyField.setAttribute('fill', `url(#${gradientId})`);
+        
+        // Update string vibration colors
+        const vibrationCircles = document.querySelectorAll('#stringVibration circle');
+        vibrationCircles.forEach(circle => {
+          circle.setAttribute('fill', currentBowColor);
+        });
+      }
+
+      // Add hover sounds when DOM loads
+      setTimeout(() => {
+        const buttons = document.querySelectorAll('.option-btn, .close-btn, .open-btn');
+        buttons.forEach(btn => {
+          btn.addEventListener('mouseenter', () => soundEngine.playUIHover());
+        });
+      }, 1000);
 
       function setActiveButton(groupSelector, value) {
         const group = document.querySelector(groupSelector);
@@ -1125,7 +1836,7 @@
                svgPoint.y <= bowArea.y + bowArea.height;
       }
 
-      // ENHANCED: Game Controls with dynamic trajectory updating
+      // ====== GAME CONTROLS WITH SOUND ======
       window.addEventListener("mousedown", function(e) {
         if (isNearBow(e.clientX, e.clientY)) {
           draw(e);
@@ -1150,6 +1861,13 @@
         var bowAngle = angle - Math.PI;
         var distance = Math.min(Math.sqrt((dx * dx) + (dy * dy)), 50);
         var scale = Math.min(Math.max(distance / 30, 1), 2);
+        
+        // Play bow draw sound based on tension
+        const tension = distance / 50;
+        if (currentBowDraw) {
+          soundEngine.stopBowDraw();
+        }
+        currentBowDraw = soundEngine.playBowDraw(tension);
         
         TweenMax.to("#bow", 0.3, {
           scaleX: scale,
@@ -1178,14 +1896,12 @@
         var arcWidth = offset.x * 3;
         var newPath = "M100,250c" + offset.x + "," + offset.y + "," + (arcWidth - offset.x) + "," + (offset.y + 50) + "," + arcWidth + ",50";
 
-        // EXTREME: Update ALL trajectory paths based on current arrow style
         updateTrajectoryPaths(newPath, distance);
       }
 
       function updateTrajectoryPaths(pathData, distance) {
         const opacity = distance/60;
         
-        // Update default trajectory
         TweenMax.to("#arc", 0.3, {
           attr: { d: pathData },
           autoAlpha: opacity
@@ -1195,7 +1911,6 @@
           opacity: opacity * 0.3
         });
 
-        // Update fire trajectory
         TweenMax.to("#arc-fire", 0.3, {
           attr: { d: pathData },
           autoAlpha: opacity
@@ -1205,7 +1920,6 @@
           opacity: opacity * 0.4
         });
 
-        // Update ice trajectory
         TweenMax.to("#arc-ice", 0.3, {
           attr: { d: pathData },
           autoAlpha: opacity
@@ -1215,7 +1929,6 @@
           opacity: opacity * 0.5
         });
 
-        // Update gold trajectory
         TweenMax.to("#arc-gold", 0.3, {
           attr: { d: pathData },
           autoAlpha: opacity
@@ -1229,6 +1942,11 @@
       function loose() {
         window.removeEventListener("mousemove", aim);
         window.removeEventListener("mouseup", loose);
+
+        // Play release sound with power
+        const power = currentBowDraw ? 1.0 : 0.5;
+        soundEngine.playBowRelease(power);
+        currentBowDraw = null;
 
         triggerBowEffects();
 
@@ -1247,7 +1965,21 @@
         newArrow.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "#arrow-" + currentArrowStyle);
         arrows.appendChild(newArrow);
 
-        // EXTREME: Use the appropriate trajectory path based on arrow style
+        // Play arrow-specific sounds
+        setTimeout(() => {
+          switch(currentArrowStyle) {
+            case 'fire':
+              soundEngine.playFireArrowEffects();
+              break;
+            case 'ice':
+              soundEngine.playIceArrowEffects();
+              break;
+            case 'gold':
+              soundEngine.playGoldArrowEffects();
+              break;
+          }
+        }, 100);
+
         var pathSelector = currentArrowStyle === 'default' ? "#arc" : "#arc-" + currentArrowStyle;
         var path = MorphSVGPlugin.pathDataToBezier(pathSelector);
         
@@ -1264,7 +1996,6 @@
           ease: Linear.easeNone
         });
         
-        // Hide all trajectory paths
         TweenMax.to("#arc, #arc-fire, #arc-ice, #arc-gold", 0.3, { opacity: 0 });
         TweenMax.to("#arcGlow, #arcGlow-fire, #arcGlow-ice, #arcGlow-gold", 0.3, { opacity: 0 });
         
@@ -1304,6 +2035,10 @@
           var dx = intersection.x - target.x;
           var dy = intersection.y - target.y;
           var distance = Math.sqrt((dx * dx) + (dy * dy));
+          
+          // Play hit sound with distance
+          soundEngine.playTargetHit(distance);
+          
           var selector = ".hit";
           if (distance < 7) {
             selector = ".bullseye";
@@ -1316,6 +2051,7 @@
       }
 
       function onMiss() {
+        soundEngine.playMissSound();
         showMessage(".miss");
       }
 
